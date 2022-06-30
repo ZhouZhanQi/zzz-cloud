@@ -1,0 +1,8 @@
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: zzz-oauth
+          uri: lb://zzz-oauth
+          predicates:
+            - Path=/zzz-oauth/**

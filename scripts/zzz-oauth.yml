@@ -1,0 +1,25 @@
+spring:
+  datasource:
+    dynamic:
+      # 设置默认的数据源或者数据源组,默认值即为 master
+      primary: master
+      datasource:
+        # 主库数据源
+        master:
+          driver-class-name: ${zzz-datasource.oauth_master.driver-class-name}
+          url: ${zzz-datasource.oauth_master.url}
+          username: ${zzz-datasource.oauth_master.username}
+          password: ${zzz-datasource.oauth_master.password}
+        # 从库数据源
+        # slave:
+        #  driver-class-name:
+        #  url:
+        #  username:
+        #  password:
+zzz:
+  mybatis-plus:
+    multi-tenant:
+      ignore-tables:
+        - sys-user
+  log:
+    path: /Users/zhouzq/logs/zzz
