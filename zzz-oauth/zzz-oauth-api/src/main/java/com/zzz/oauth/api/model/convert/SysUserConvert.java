@@ -1,7 +1,7 @@
 package com.zzz.oauth.api.model.convert;
 
 import com.zzz.oauth.api.model.bo.SysUserBo;
-import com.zzz.oauth.api.domain.SysUser;
+import com.zzz.oauth.api.model.domain.SysUser;
 import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 
@@ -22,5 +22,6 @@ public interface SysUserConvert {
      * @param sysUser
      * @return
      */
+
     SysUserBo convert2Bo(SysUser sysUser);
 }

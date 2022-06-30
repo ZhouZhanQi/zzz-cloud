@@ -3,7 +3,7 @@ package com.zzz.oauth.provider.mapper;
 import com.baomidou.mybatisplus.annotation.InterceptorIgnore;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.zzz.oauth.model.domain.SysUser;
+import com.zzz.oauth.api.model.domain.SysUser;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
@@ -18,7 +18,7 @@ import org.apache.ibatis.annotations.Select;
  */
 @Mapper
 public interface SysUserMapper extends BaseMapper<SysUser> {
-    
+
     @InterceptorIgnore(tenantLine = "true")
     @Select("select * from sys_user ${ew.customSqlSegment}")
     SysUser selectOneIgnoreTenant(@Param("ew") Wrapper<SysUser> queryWrapper);

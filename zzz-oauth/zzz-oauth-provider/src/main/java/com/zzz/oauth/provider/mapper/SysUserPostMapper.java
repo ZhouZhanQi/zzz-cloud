@@ -2,7 +2,7 @@ package com.zzz.oauth.provider.mapper;
 
 import com.baomidou.mybatisplus.annotation.InterceptorIgnore;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.zzz.oauth.model.domain.SysUserPost;
+import com.zzz.oauth.api.model.domain.SysUserPost;
 import org.apache.ibatis.annotations.Mapper;
 
 /**

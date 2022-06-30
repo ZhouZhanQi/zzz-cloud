@@ -1,7 +1,7 @@
 package com.zzz.oauth.provider.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.zzz.oauth.model.domain.SysRoleResource;
+import com.zzz.oauth.api.model.domain.SysRoleResource;
 import org.apache.ibatis.annotations.Mapper;
 
 /**

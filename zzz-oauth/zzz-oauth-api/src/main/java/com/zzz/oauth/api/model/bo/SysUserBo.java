@@ -1,11 +1,11 @@
 package com.zzz.oauth.api.model.bo;
 
 
-import com.zzz.oauth.api.domain.SysDept;
-import com.zzz.oauth.api.domain.SysPost;
-import com.zzz.oauth.api.domain.SysRole;
-import com.zzz.oauth.api.domain.SysTenant;
-import com.zzz.oauth.api.domain.SysUser;
+import com.zzz.oauth.api.model.domain.SysDept;
+import com.zzz.oauth.api.model.domain.SysPost;
+import com.zzz.oauth.api.model.domain.SysRole;
+import com.zzz.oauth.api.model.domain.SysTenant;
+import com.zzz.oauth.api.model.domain.SysUser;
 import lombok.*;
 
 import java.util.List;
