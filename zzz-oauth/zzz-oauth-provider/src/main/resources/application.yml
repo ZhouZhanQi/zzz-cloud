@@ -1,0 +1,27 @@
+server:
+  port: 20010
+spring:
+  application:
+    name: zzz-oauth
+    namespace: platform
+#  profiles:
+#    active: local
+  config:
+    import:
+      - optional:nacos:application-base.yml?group=common
+      - optional:nacos:application-db.yml?group=common
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:18848
+        group: ${spring.application.namespace}
+        namespace: local
+        username: nacos
+        password: nacos
+      config:
+        server-addr: 127.0.0.1:18848
+        group: ${spring.application.namespace}
+        name: ${spring.application.name}.yml
+        namespace: local
+        username: nacos
+        password: nacos
