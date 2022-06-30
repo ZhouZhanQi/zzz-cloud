@@ -1,17 +1,15 @@
 server:
-  port: 20010
-  servlet:
-    context-path: /zzz-oauth
+  port: 20000
 spring:
   application:
-    name: zzz-oauth
+    name: zzz-gateway
     namespace: platform
-#  profiles:
-#    active: local
+  #  profiles:
+  #    active: local
   config:
     import:
       - optional:nacos:application-base.yml?group=common
-      - optional:nacos:application-db.yml?group=common
+      - optional:nacos:application-cache.yml?group=common
       - optional:nacos:${spring.application.name}.yml?group=${spring.application.namespace}
   cloud:
     nacos:

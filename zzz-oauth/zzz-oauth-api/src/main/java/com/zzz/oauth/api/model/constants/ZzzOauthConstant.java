@@ -5,37 +5,40 @@ package com.zzz.oauth.api.model.constants;
  * @date 2021/9/12 3:53 上午
  * @desc 认证服务常量
  */
-public interface BaseOauthConstant {
+public interface ZzzOauthConstant {
+
+    String SERVICE_NAME = "zzz-oauth";
+
 
     /**
      * 用户Id
      */
-    String SHADOWLAYOVER_USER_ID = "shadowlayover_user_id";
+    String ZZZ_USER_ID = "zzz_user_id";
 
     /**
      * 用户名
      */
-    String SHADOWLAYOVER_USER_NAME = "shadowlayover_user_name";
+    String ZZZ_USER_NAME = "zzz_user_name";
 
     /**
      * 头像地址
      */
-    String SHADOWLAYOVER_AVATAR = "shadowlayover_avatar";
+    String ZZZ_AVATAR = "zzz_avatar";
 
     /**
      * 角色Id
      */
-    String SHADOWLAYOVER_ROLE_ID = "shadowlayover_role_id";
+    String ZZZ_ROLE_ID = "zzz_role_id";
 
     /**
      * 用户类型
      */
-    String SHADOWLAYOVER_USER_TYPE = "shadowlayover_user_type";
+    String ZZZ_USER_TYPE = "zzz_user_type";
 
     /**
      * 租户Id
      */
-    String SHADOWLAYOVER_TENANT_ID = "shadowlayover_tenant_id";
+    String ZZZ_TENANT_ID = "zzz_tenant_id";
 
 
     String OAUTH_MOBILE = "/oauth/mobile";
