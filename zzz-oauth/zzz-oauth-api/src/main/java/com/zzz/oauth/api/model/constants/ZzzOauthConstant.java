@@ -9,6 +9,12 @@ public interface ZzzOauthConstant {
 
     String SERVICE_NAME = "zzz-oauth";
 
+    String AUTHORIZATION = "token";
+
+    /**
+     * 加密特征码
+     */
+    String NOOP = "{noop}";
 
     /**
      * 用户Id

@@ -27,6 +27,7 @@ buildscript {
         velocityEngineVersion = '2.3'
         zzzFrameworkUtilVersion = '0.0.1-SNAPSHOT'
         zzzFrameworkVersion = '0.0.1-SNAPSHOT'
+        springAuthorizationServerVersion = '0.3.1'
     }
 
     repositories {
