@@ -1,0 +1,6 @@
+group 'com.zzz.system'
+version '1.0-SNAPSHOT'
+
+dependencies {
+    api project(':zzz-system:zzz-system-api')
+}
