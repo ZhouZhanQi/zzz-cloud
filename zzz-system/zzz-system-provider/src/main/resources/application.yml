@@ -12,6 +12,7 @@ spring:
     import:
       - optional:nacos:application-base.yml?group=common
       - optional:nacos:application-db.yml?group=common
+      - optional:nacos:application-cache.yml?group=common
       - optional:nacos:${spring.application.name}.yml?group=${spring.application.namespace}
   cloud:
     nacos:

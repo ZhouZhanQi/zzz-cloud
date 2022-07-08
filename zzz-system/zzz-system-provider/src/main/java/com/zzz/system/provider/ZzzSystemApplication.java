@@ -12,10 +12,10 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
  */
 @EnableDiscoveryClient
 @SpringBootApplication
-public class ZzzOauthApplication {
+public class ZzzSystemApplication {
 
     public static void main(String[] args) {
-        SpringApplication application = new SpringApplication(ZzzOauthApplication.class);
+        SpringApplication application = new SpringApplication(ZzzSystemApplication.class);
         application.addListeners(new LoggingListener());
         application.run(args);
     }

@@ -1,7 +1,8 @@
-package com.zzz.system.provider.authorization;
+package com.zzz.auth.provider.authorization;
 
 import cn.hutool.core.util.StrUtil;
 import com.google.common.collect.Lists;
+import com.zzz.auth.api.model.code.AuthResponseCode;
 import com.zzz.framework.common.util.AssertUtils;
 import com.zzz.system.api.model.constants.ZzzSystemConstant;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +31,7 @@ public class ZzzCacheOauth2AuthorizationServiceImpl implements OAuth2Authorizati
 
     @Override
     public void save(OAuth2Authorization authorization) {
-        AssertUtils.checkNotNull(authorization, "authorization cannot be null");
+        AssertUtils.checkNotNull(authorization, AuthResponseCode.AUTHENTICATION_INFO_IS_NULL);
         Optional.ofNullable((String) authorization.getAttribute("state")).ifPresent(token -> {
             redisTemplate.opsForValue().set(buildCacheKey(OAuth2ParameterNames.STATE, token), authorization, TIMEOUT,
                     TimeUnit.MINUTES);

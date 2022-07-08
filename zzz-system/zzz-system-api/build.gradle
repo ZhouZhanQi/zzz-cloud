@@ -2,8 +2,5 @@ group 'com.zzz.system'
 version '1.0-SNAPSHOT'
 
 dependencies {
-    implementation("com.zzz.framework:framework-util:${zzzFrameworkUtilVersion}")
-    implementation("com.zzz.framework:framework-core:${zzzFrameworkVersion}")
-    implementation("com.zzz.framework:framework-feign:${zzzFrameworkVersion}")
-    implementation("com.zzz.framework:framework-data:${zzzFrameworkVersion}")
+    api("com.zzz.framework:framework-data:${zzzFrameworkVersion}")
 }

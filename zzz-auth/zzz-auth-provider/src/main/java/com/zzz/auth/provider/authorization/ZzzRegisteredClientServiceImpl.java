@@ -1,11 +1,11 @@
-package com.zzz.system.provider.authorization;
+package com.zzz.auth.provider.authorization;
 
-import com.baomidou.mybatisplus.core.conditions.Wrapper;
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.zzz.auth.api.model.code.AuthResponseCode;
 import com.zzz.framework.common.util.AssertUtils;
+import com.zzz.framework.starter.core.utils.ClientUtils;
 import com.zzz.system.api.model.constants.ZzzSystemConstant;
 import com.zzz.system.api.model.domain.SysClient;
-import com.zzz.system.provider.service.impl.SysClientServiceImpl;
+import com.zzz.system.client.service.RemoteSysClientServiceClient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
@@ -25,8 +25,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class ZzzRegisteredClientServiceImpl implements RegisteredClientRepository {
 
-    private final SysClientServiceImpl sysClientService;
-
+    private final RemoteSysClientServiceClient sysClientService;
 
     /**
      * 刷新令牌有效期默认 30 天
@@ -50,10 +49,9 @@ public class ZzzRegisteredClientServiceImpl implements RegisteredClientRepositor
 
     @Override
     public RegisteredClient findByClientId(String clientId) {
-        Wrapper<SysClient> queryWrapper = Wrappers.lambdaQuery(SysClient.class)
-                .eq(SysClient::getClientId, clientId);
-        SysClient sysClient = sysClientService.getOne(queryWrapper);
-        AssertUtils.checkNotNull(sysClient, "");
+        //获取客户端信息
+        SysClient sysClient = ClientUtils.serviceCallDataNoThrow(sysClientService.getByClientId(clientId));
+        AssertUtils.checkNotNull(sysClient, AuthResponseCode.SYS_CLIENT_NOT_FOUND_ERROR);
         RegisteredClient.Builder builder = RegisteredClient.withId(sysClient.getClientId())
                 .clientId(sysClient.getClientId())
                 .clientSecret(ZzzSystemConstant.NOOP + sysClient.getClientSecret())

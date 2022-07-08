@@ -25,9 +25,7 @@ import reactor.core.publisher.Mono;
 @Component
 public class PreAuthTokenFilter implements GlobalFilter, Ordered {
 
-
     private final ZzzGatewayProperties securityProperties;
-
 
     /**
      * 请求地址匹配
@@ -36,7 +34,6 @@ public class PreAuthTokenFilter implements GlobalFilter, Ordered {
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
-
         //网关身份
         ServerHttpRequest request = exchange.getRequest();
         String requestPath = request.getURI().getRawPath();

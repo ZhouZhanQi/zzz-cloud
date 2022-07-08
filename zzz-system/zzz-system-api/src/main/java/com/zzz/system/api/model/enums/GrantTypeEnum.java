@@ -3,6 +3,8 @@ package com.zzz.system.api.model.enums;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+import java.util.Arrays;
+
 /**
  * <pre>
  * @author: zhouzhanqi
@@ -28,4 +30,13 @@ public enum GrantTypeEnum {
     private final String key;
 
     private final String value;
+
+    /**
+     * 根据key值获取枚举
+     * @param key
+     * @return
+     */
+    public static GrantTypeEnum fromKey(String key) {
+        return Arrays.stream(GrantTypeEnum.values()).filter(item -> item.getKey().equals(key)).findFirst().orElse(null);
+    }
 }

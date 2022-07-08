@@ -6,10 +6,10 @@ spring:
       datasource:
         # 主库数据源
         master:
-          driver-class-name: ${zzz-datasource.oauth_master.driver-class-name}
-          url: ${zzz-datasource.oauth_master.url}
-          username: ${zzz-datasource.oauth_master.username}
-          password: ${zzz-datasource.oauth_master.password}
+          driver-class-name: ${zzz-datasource.system_master.driver-class-name}
+          url: ${zzz-datasource.system_master.url}
+          username: ${zzz-datasource.system_master.username}
+          password: ${zzz-datasource.system_master.password}
         # 从库数据源
         # slave:
         #  driver-class-name:

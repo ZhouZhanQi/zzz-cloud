@@ -2,11 +2,7 @@ group 'com.zzz.system'
 version '1.0-SNAPSHOT'
 
 dependencies {
-
     implementation project(':zzz-system:zzz-system-api')
-
-    implementation("com.zzz.framework:framework-util:${zzzFrameworkUtilVersion}")
-    implementation("com.zzz.framework:framework-core:${zzzFrameworkVersion}")
     implementation("com.zzz.framework:framework-cache:${zzzFrameworkVersion}")
     implementation("com.zzz.framework:framework-data:${zzzFrameworkVersion}")
     implementation("com.zzz.framework:framework-web:${zzzFrameworkVersion}")
@@ -15,6 +11,4 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-undertow")
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.security:spring-security-oauth2-authorization-server:${springAuthorizationServerVersion}")
-
-
 }

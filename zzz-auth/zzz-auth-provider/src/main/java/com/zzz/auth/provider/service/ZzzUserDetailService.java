@@ -1,14 +1,17 @@
-package com.zzz.system.provider.service;
+package com.zzz.auth.provider.service;
 
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
 
 /**
- * @author zhouzhanqi
- * @date 2021/9/12 2:52 上午
- * @desc 系统用户服务
+ * @author: zhouzq
+ * @date: 2022/7/6-16:21
+ * @desc: zzz用户详情服务
  */
-public interface IZzzUserService {
+@Service
+public interface ZzzUserDetailService extends UserDetailsService {
 
     /**
      * 根据手机号码登录
@@ -17,15 +20,6 @@ public interface IZzzUserService {
      * @throws UsernameNotFoundException
      */
     UserDetails loadUserByPhone(String mobilePhone) throws UsernameNotFoundException;
-
-
-    /**
-     * 根据用户名登录
-     * @param username 用户名
-     * @return
-     * @throws UsernameNotFoundException
-     */
-    UserDetails loadUserByName(String username) throws UsernameNotFoundException;
 
     /**
      * 根据社交账号登录

@@ -5,9 +5,9 @@ package com.zzz.system.api.model.constants;
  * @date 2021/9/12 3:53 上午
  * @desc 认证服务常量
  */
-public interface ZzzOauthConstant {
+public interface ZzzSystemConstant {
 
-    String SERVICE_NAME = "zzz-oauth";
+    String SERVICE_NAME = "zzz-system";
 
     String AUTHORIZATION = "token";
 

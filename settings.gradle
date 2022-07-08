@@ -5,7 +5,4 @@ include 'zzz-system:zzz-system-provider'
 include 'zzz-auth:zzz-auth-api'
 include 'zzz-auth:zzz-auth-provider'
 include 'zzz-auth:zzz-auth-client'
-findProject(':zzz-auth:zzz-auth-client')?.name = 'zzz-auth-client'
 include 'zzz-system:zzz-system-client'
-findProject(':zzz-system:zzz-system-client')?.name = 'zzz-system-client'
-

@@ -55,8 +55,8 @@ allprojects {
     group 'com.zzz.framework'
     version '1.0-SNAPSHOT'
 
-    sourceCompatibility = 8
-    targetCompatibility = 8
+    sourceCompatibility = 17
+    targetCompatibility = 17
 
     repositories {
         mavenLocal()
@@ -77,14 +77,15 @@ allprojects {
 
 subprojects {
     dependencies {
-
         implementation platform("org.springframework.boot:spring-boot-dependencies:${springBootVersion}")
         implementation platform("org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}")
         implementation platform("com.alibaba.cloud:spring-cloud-alibaba-dependencies:${springCloudAlibabaVersion}")
-
         implementation("org.springframework.boot:spring-boot-starter-actuator") {
             exclude group: "org.springframework.boot", module: "spring-boot-starter-logging"
         }
+        implementation("com.zzz.framework:framework-util:${zzzFrameworkUtilVersion}")
+        implementation("com.zzz.framework:framework-core:${zzzFrameworkVersion}")
+
         annotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}", "org.projectlombok:lombok:${lombokVersion}", "org.projectlombok:lombok-mapstruct-binding:${lombokMapstructBindingVersion}"
     }
 }

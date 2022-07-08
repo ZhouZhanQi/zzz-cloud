@@ -2,5 +2,11 @@ group 'com.zzz.auth'
 version '1.0-SNAPSHOT'
 
 dependencies {
+    implementation("com.zzz.framework:framework-util:${zzzFrameworkUtilVersion}")
+    implementation("com.zzz.framework:framework-core:${zzzFrameworkVersion}")
+    implementation("com.zzz.framework:framework-cache:${zzzFrameworkVersion}")
+    implementation("com.zzz.framework:framework-security:${zzzFrameworkVersion}")
 
+    implementation project(':zzz-auth:zzz-auth-api')
+    implementation project(':zzz-system:zzz-system-client')
 }

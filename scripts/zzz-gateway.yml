@@ -6,3 +6,7 @@ spring:
           uri: lb://zzz-oauth
           predicates:
             - Path=/zzz-oauth/**
+        - id: zzz-system
+          uri: lb://zzz-system
+          predicates:
+            - Path=/zzz-system/**
