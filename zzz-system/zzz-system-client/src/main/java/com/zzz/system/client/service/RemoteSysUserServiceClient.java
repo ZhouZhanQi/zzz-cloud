@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 public interface RemoteSysUserServiceClient extends RemoteSysUserService {
 
     @Component
-    class FallBack implements RemoteSysUserServiceClient {
+    public class FallBack implements RemoteSysUserServiceClient {
         @Override
         public ResponseData<SysUser> getById(Long id) {
             return null;

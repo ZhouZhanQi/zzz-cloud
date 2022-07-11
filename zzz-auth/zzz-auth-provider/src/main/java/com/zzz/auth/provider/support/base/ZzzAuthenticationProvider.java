@@ -8,8 +8,6 @@ import com.zzz.framework.common.util.AssertUtils;
 import com.zzz.framework.starter.core.model.enums.ZzzHeadParamNameEnum;
 import com.zzz.framework.starter.core.utils.ServletUtils;
 import com.zzz.system.api.model.enums.GrantTypeEnum;
-import com.zzz.system.client.service.RemoteSysUserServiceClient;
-import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authentication.dao.AbstractUserDetailsAuthenticationProvider;
 import org.springframework.security.core.AuthenticationException;

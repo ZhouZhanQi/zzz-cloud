@@ -48,12 +48,12 @@ public class AfterAuthFilter implements GlobalFilter, Ordered {
         }
 
         String token = AccessTokenUtils.getTokenFromHead(authorization);
-        ZzzUser loginUser = redisCacheHelper.get(RedisKeyPrefix.OAUTH_TOKEN_USER, token);
-        AssertUtils.checkNotNull(loginUser, new FrameworkException(BasePlatformGatewayExceptionCode.TOKEN_USER_INFO_EXPIRED));
-        //设置用户信息
-        request.mutate()
-                .headers(header -> header.add(CoreConstants.ZZZ_USER_INFO, Base64.getEncoder().encodeToString(JacksonUtils.pojo2Json(loginUser).getBytes(StandardCharsets.UTF_8))))
-                .build();
+//        ZzzUser loginUser = redisCacheHelper.get(RedisKeyPrefix.OAUTH_TOKEN_USER, token);
+//        AssertUtils.checkNotNull(loginUser, new FrameworkException(BasePlatformGatewayExceptionCode.TOKEN_USER_INFO_EXPIRED));
+//        //设置用户信息
+//        request.mutate()
+//                .headers(header -> header.add(CoreConstants.ZZZ_USER_INFO, Base64.getEncoder().encodeToString(JacksonUtils.pojo2Json(loginUser).getBytes(StandardCharsets.UTF_8))))
+//                .build();
         return chain.filter(exchange.mutate().request(request).build());
     }
 
