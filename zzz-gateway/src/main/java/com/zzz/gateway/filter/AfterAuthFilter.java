@@ -47,7 +47,7 @@ public class AfterAuthFilter implements GlobalFilter, Ordered {
             return chain.filter(exchange);
         }
 
-        String token = AccessTokenUtils.getTokenFromHead(authorization);
+//        String token = AccessTokenUtils.getTokenFromHead(authorization);
 //        ZzzUser loginUser = redisCacheHelper.get(RedisKeyPrefix.OAUTH_TOKEN_USER, token);
 //        AssertUtils.checkNotNull(loginUser, new FrameworkException(BasePlatformGatewayExceptionCode.TOKEN_USER_INFO_EXPIRED));
 //        //设置用户信息

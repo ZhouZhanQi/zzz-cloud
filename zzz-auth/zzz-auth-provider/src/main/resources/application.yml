@@ -1,5 +1,7 @@
 server:
   port: 20020
+  servlet:
+    context-path: /zzz-auth
 spring:
   application:
     name: zzz-auth
@@ -24,3 +26,11 @@ spring:
         namespace: local
         username: nacos
         password: nacos
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    health:
+      show-details: ALWAYS

@@ -6,6 +6,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.ComponentScans;
 
 /**
  * @author: zhouzq
@@ -15,7 +16,7 @@ import org.springframework.context.annotation.ComponentScan;
 @EnableZzzCache
 @SpringBootApplication
 @EnableDiscoveryClient
-@ComponentScan("com.zzz.*.client.**")
+@ComponentScan(value = {"com.zzz.*.client.**", "com.zzz.auth"})
 public class ZzzAuthApplication {
 
     public static void main(String[] args) {
