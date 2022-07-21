@@ -279,3 +279,4 @@ CREATE TABLE `sys_client`
     PRIMARY KEY (`id`)
 ) COMMENT='客户端';
 
+INSERT INTO `zzz_system`.`sys_client` (`id`, `client_id`, `client_secret`, `resource_ids`, `scope`, `authorized_grant_types`, `authorities`, `redirect_uri`, `access_token_validity`, `refresh_token_validity`, `autoapprove`, `additional_information`, `trace_id`, `is_deleted`, `creator_id`, `creator`, `create_time`, `updater_id`, `updater`, `update_time`) VALUES (1, 'platform', 'platform', 'zzz-auth', 'all', 'password,app,refresh_token,authorization_code,client_credentials', NULL, 'http://www.baidu.com', 7200, 7200, 'false', NULL, 'cc7b537ed39148c9a7754d6be2328871', 0, 0, 'admin', '2021-10-27 17:16:15', 0, 'admin', '2021-10-27 17:16:25');
