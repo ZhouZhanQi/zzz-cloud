@@ -2,22 +2,43 @@ package com.zzz.auth.provider.support.pwd;
 
 import com.zzz.auth.provider.support.customize.ZzzOauth2AuthenticationProvider;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.oauth2.core.OAuth2AccessToken;
+import org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
 import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenGenerator;
+
+import java.util.Map;
 
 /**
  * @author: zhouzq
  * @date: 2022/7/12-11:02
  * @desc: 密码授权处理
  */
-@RequiredArgsConstructor
+@Slf4j
 public class OAuth2ResourceOwnerPwdAuthenticationProvider extends ZzzOauth2AuthenticationProvider<OAuth2ResourceOwnerPwdAuthenticationToken> {
 
-    private final AuthenticationManager authenticationManager;
+    public OAuth2ResourceOwnerPwdAuthenticationProvider(AuthenticationManager authenticationManager, OAuth2AuthorizationService oAuth2AuthorizationService, OAuth2TokenGenerator<OAuth2AccessToken> oAuth2TokenGenerator) {
+        super(authenticationManager, oAuth2AuthorizationService, oAuth2TokenGenerator);
+    }
 
-    private final OAuth2AuthorizationService oAuth2AuthorizationService;
+    @Override
+    public boolean supports(Class<?> authentication) {
+        boolean supports = OAuth2ResourceOwnerPwdAuthenticationToken.class.isAssignableFrom(authentication);
+        if (log.isDebugEnabled()) {
+            log.debug(">>> oauth2 resource owner pwd authentication: {}, supports: {}", authentication, supports);
+        }
+        return supports;
+    }
 
-    private final OAuth2TokenGenerator<OAuth2AccessToken> oAuth2TokenGenerator;
+    @Override
+    public UsernamePasswordAuthenticationToken buildToken(Map<String, Object> reqParameters) {
+        String username = (String) reqParameters.get(OAuth2ParameterNames.USERNAME);
+        String password = (String) reqParameters.get(OAuth2ParameterNames.PASSWORD);
+        return new UsernamePasswordAuthenticationToken(username, password);
+    }
 }

@@ -3,22 +3,27 @@ package com.zzz.auth.provider.support.sms;
 import com.zzz.auth.provider.support.customize.ZzzOauth2AuthenticationProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.oauth2.core.OAuth2AccessToken;
+import org.springframework.security.oauth2.core.OAuth2Token;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
 import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenGenerator;
+
+import java.util.Map;
 
 /**
  * @author: zhouzq
  * @date: 2022/7/12-11:02
  * @desc: 密码授权处理
  */
-@RequiredArgsConstructor
 public class OAuth2ResourceOwnerSmsAuthenticationProvider extends ZzzOauth2AuthenticationProvider<OAuth2ResourceOwnerSmsAuthenticationToken> {
 
-    private final AuthenticationManager authenticationManager;
+    public OAuth2ResourceOwnerSmsAuthenticationProvider(AuthenticationManager authenticationManager, OAuth2AuthorizationService authorizationService, OAuth2TokenGenerator<? extends OAuth2Token> tokenGenerator) {
+        super(authenticationManager, authorizationService, tokenGenerator);
+    }
 
-    private final OAuth2AuthorizationService oAuth2AuthorizationService;
-
-    private final OAuth2TokenGenerator<OAuth2AccessToken> oAuth2TokenGenerator;
-
+    @Override
+    public UsernamePasswordAuthenticationToken buildToken(Map<String, Object> reqParameters) {
+        return null;
+    }
 }

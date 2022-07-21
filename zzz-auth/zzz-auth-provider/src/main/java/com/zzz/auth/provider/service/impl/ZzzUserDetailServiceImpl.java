@@ -48,4 +48,9 @@ public class ZzzUserDetailServiceImpl implements ZzzUserDetailService {
                             .build();
                 }).orElseThrow();
     }
+
+    @Override
+    public int getOrder() {
+        return 0;
+    }
 }

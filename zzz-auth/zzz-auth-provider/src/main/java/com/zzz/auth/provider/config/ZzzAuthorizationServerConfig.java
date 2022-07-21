@@ -1,6 +1,11 @@
 package com.zzz.auth.provider.config;
 
+import cn.hutool.crypto.SecureUtil;
 import com.google.common.collect.Lists;
+import com.nimbusds.jose.jwk.JWKSet;
+import com.nimbusds.jose.jwk.RSAKey;
+import com.nimbusds.jose.jwk.source.JWKSource;
+import com.nimbusds.jose.proc.SecurityContext;
 import com.zzz.auth.provider.support.ZzzOauth2TokenGenerate;
 import com.zzz.auth.provider.support.base.ZzzAuthenticationProvider;
 import com.zzz.auth.provider.support.base.ZzzOAuth2TokenCustomizer;
@@ -17,8 +22,11 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.oauth2.server.authorization.OAuth2AuthorizationServerConfigurer;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
 import org.springframework.security.oauth2.server.authorization.config.ProviderSettings;
 import org.springframework.security.oauth2.server.authorization.token.DelegatingOAuth2TokenGenerator;
@@ -32,7 +40,9 @@ import org.springframework.security.oauth2.server.authorization.web.authenticati
 import org.springframework.security.web.DefaultSecurityFilterChain;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationConverter;
-import org.springframework.security.web.util.matcher.RequestMatcher;
+
+import java.security.KeyPair;
+import java.security.interfaces.RSAPublicKey;
 
 /**
  * @author: zhouzq
@@ -55,15 +65,16 @@ public class ZzzAuthorizationServerConfig {
                             .accessTokenResponseHandler(new ZzzAuthSuccessHandler()) // 登录成功处理器
                             .errorResponseHandler(new ZzzAuthFailHandler());// 登录失败处理器
                 }).clientAuthentication(oAuth2ClientAuthenticationConfigurer -> // 个性化客户端认证
-                        oAuth2ClientAuthenticationConfigurer.errorResponseHandler(new ZzzAuthFailHandler()))// 处理客户端认证异常
+                        oAuth2ClientAuthenticationConfigurer
+                                .errorResponseHandler(new ZzzAuthFailHandler()))
+                                .authorizationEndpoint(authorizationEndpoint -> authorizationEndpoint.consentPage("/oauth2/consent"))// 处理客户端认证异常
                 );
+
         DefaultSecurityFilterChain securityFilterChain = http.requestMatcher(authorizationServerConfigurer.getEndpointsMatcher())
                 .authorizeRequests(authorizeRequests -> authorizeRequests.anyRequest().authenticated())
                 .apply(authorizationServerConfigurer.authorizationService(oAuth2AuthorizationService)// redis存储token的实现
                         .providerSettings(ProviderSettings.builder().build()))
-                .and().build();
-
-        // 注入自定义授权模式实现
+                .and().formLogin(Customizer.withDefaults()).build();
         addCustomOAuth2GrantAuthenticationProvider(http);
         return securityFilterChain;
     }
@@ -112,5 +123,25 @@ public class ZzzAuthorizationServerConfig {
         // 注入Token 扩展关联用户信息
         accessTokenGenerator.setAccessTokenCustomizer(new ZzzOAuth2TokenCustomizer());
         return new DelegatingOAuth2TokenGenerator(accessTokenGenerator, new OAuth2RefreshTokenGenerator());
+    }
+
+    @Bean
+    public JWKSource<SecurityContext> jwkSource() {
+        KeyPair keyPair = SecureUtil.generateKeyPair("RSA", 2048);
+        RSAKey rsaKey = new RSAKey.Builder((RSAPublicKey) keyPair.getPublic())
+                .privateKey(keyPair.getPrivate())
+                .build();
+        JWKSet jwkSet = new JWKSet(rsaKey);
+        return (jwkSelector, securityContext) -> jwkSelector.select(jwkSet);
+    }
+
+    @Bean
+    public ProviderSettings providerSettings() {
+        return ProviderSettings.builder().build();
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 }

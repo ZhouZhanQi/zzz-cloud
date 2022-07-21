@@ -1,5 +1,6 @@
 package com.zzz.auth.provider.service;
 
+import org.springframework.core.Ordered;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -10,8 +11,7 @@ import org.springframework.stereotype.Service;
  * @date: 2022/7/6-16:21
  * @desc: zzz用户详情服务
  */
-@Service
-public interface ZzzUserDetailService extends UserDetailsService {
+public interface ZzzUserDetailService extends UserDetailsService, Ordered {
 
     /**
      * 根据手机号码登录
@@ -28,4 +28,13 @@ public interface ZzzUserDetailService extends UserDetailsService {
      * @throws UsernameNotFoundException
      */
     UserDetails loadUserBySocial(String openId) throws UsernameNotFoundException;
+
+    /**
+     * 是否支持此客户端校验
+     * @param clientId 目标客户端
+     * @return true/false
+     */
+    default boolean support(String clientId, String grantType) {
+        return true;
+    }
 }
