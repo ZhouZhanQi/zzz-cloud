@@ -5,6 +5,7 @@ import com.zzz.framework.starter.core.listener.LoggingListener;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.ComponentScans;
 
@@ -16,6 +17,7 @@ import org.springframework.context.annotation.ComponentScans;
 @EnableZzzCache
 @SpringBootApplication
 @EnableDiscoveryClient
+@EnableFeignClients
 @ComponentScan(value = {"com.zzz.*.client.**", "com.zzz.auth"})
 public class ZzzAuthApplication {
 

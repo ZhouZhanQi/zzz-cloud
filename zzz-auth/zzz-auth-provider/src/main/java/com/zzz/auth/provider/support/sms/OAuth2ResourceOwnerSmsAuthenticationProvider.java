@@ -7,6 +7,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.oauth2.core.OAuth2AccessToken;
 import org.springframework.security.oauth2.core.OAuth2Token;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
+import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
 import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenGenerator;
 
 import java.util.Map;
@@ -23,7 +24,12 @@ public class OAuth2ResourceOwnerSmsAuthenticationProvider extends ZzzOauth2Authe
     }
 
     @Override
-    public UsernamePasswordAuthenticationToken buildToken(Map<String, Object> reqParameters) {
+    public UsernamePasswordAuthenticationToken buildToken(Map<String, Object> requestParameters) {
         return null;
+    }
+
+    @Override
+    public void checkClient(RegisteredClient registeredClient) {
+
     }
 }

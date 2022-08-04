@@ -22,6 +22,11 @@ public interface SysUserConvert {
      * @param sysUser
      * @return
      */
-
+    @Mappings({
+        @Mapping(target = "sysDept", ignore = true),
+        @Mapping(target = "sysPost", ignore = true),
+        @Mapping(target = "sysTenant", ignore = true),
+        @Mapping(target = "sysRoleList", ignore = true)
+    })
     SysUserBo convert2Bo(SysUser sysUser);
 }

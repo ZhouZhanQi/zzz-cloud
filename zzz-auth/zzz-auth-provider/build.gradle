@@ -6,6 +6,7 @@ dependencies {
     implementation("com.zzz.framework:framework-core:${zzzFrameworkVersion}")
     implementation("com.zzz.framework:framework-cache:${zzzFrameworkVersion}")
     implementation("com.zzz.framework:framework-security:${zzzFrameworkVersion}")
+    implementation("com.zzz.framework:framework-feign:${zzzFrameworkVersion}")
 
     implementation project(':zzz-auth:zzz-auth-api')
     implementation (project(':zzz-system:zzz-system-client'))

@@ -1,23 +1,14 @@
 package com.zzz.auth.provider.support.customize;
 
+import cn.hutool.core.builder.Builder;
+import com.zzz.auth.api.model.code.AuthResponseCode;
 import com.zzz.framework.common.util.AssertUtils;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.authentication.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.oauth2.core.AuthorizationGrantType;
-import org.springframework.security.oauth2.core.ClaimAccessor;
-import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
-import org.springframework.security.oauth2.core.OAuth2AccessToken;
-import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
-import org.springframework.security.oauth2.core.OAuth2Error;
-import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
-import org.springframework.security.oauth2.core.OAuth2RefreshToken;
-import org.springframework.security.oauth2.core.OAuth2Token;
-import org.springframework.security.oauth2.core.OAuth2TokenType;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.oauth2.core.*;
 import org.springframework.security.oauth2.server.authorization.OAuth2Authorization;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
 import org.springframework.security.oauth2.server.authorization.authentication.OAuth2AccessTokenAuthenticationToken;
@@ -27,15 +18,11 @@ import org.springframework.security.oauth2.server.authorization.context.Provider
 import org.springframework.security.oauth2.server.authorization.token.DefaultOAuth2TokenContext;
 import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenContext;
 import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenGenerator;
-import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 
 import java.security.Principal;
 import java.time.Instant;
-import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author: zhouzq
@@ -44,6 +31,8 @@ import java.util.Set;
  */
 @Slf4j
 public abstract class ZzzOauth2AuthenticationProvider<T extends ZzzOauth2AuthenticationToken> implements AuthenticationProvider {
+
+    private static final String ERROR_URI = "https://datatracker.ietf.org/doc/html/rfc6749#section-4.1.2.1";
 
 
     private final OAuth2AuthorizationService authorizationService;
@@ -55,13 +44,19 @@ public abstract class ZzzOauth2AuthenticationProvider<T extends ZzzOauth2Authent
     public ZzzOauth2AuthenticationProvider(AuthenticationManager authenticationManager,
                                            OAuth2AuthorizationService authorizationService,
                                            OAuth2TokenGenerator<? extends OAuth2Token> tokenGenerator) {
-        AssertUtils.checkNotNull(authorizationService, "authorizationService cannot be null");
-        AssertUtils.checkNotNull(tokenGenerator, "tokenGenerator cannot be null");
+        AssertUtils.checkNotNull(authorizationService, AuthResponseCode.AUTHENTICATION_SERVICE_IS_NULL);
+        AssertUtils.checkNotNull(tokenGenerator, AuthResponseCode.TOKEN_GENERATOR_IS_NULL);
         this.authenticationManager = authenticationManager;
         this.authorizationService = authorizationService;
         this.tokenGenerator = tokenGenerator;
     }
 
+    /**
+     *
+     * @param authentication the authentication request object.
+     * @return
+     * @throws AuthenticationException
+     */
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         T resourceOwnerBaseAuthentication = (T) authentication;
@@ -71,25 +66,25 @@ public abstract class ZzzOauth2AuthenticationProvider<T extends ZzzOauth2Authent
         //todo 校验客户端
         checkClient(registeredClient);
 
-        Set<String> authorizedScopes;
-
-        AssertUtils.checkArgument(CollectionUtils.isEmpty(resourceOwnerBaseAuthentication.getScopes()), "scope is empty");
+        AssertUtils.checkArgument(CollectionUtils.isEmpty(resourceOwnerBaseAuthentication.getScopes()), AuthResponseCode.AUTHENTICATION_SCOPE_IS_EMPTY);
 
         // Default to configured scopes
         resourceOwnerBaseAuthentication.getScopes().stream().forEach(requestedScope -> {
             AssertUtils.checkArgument(!registeredClient.getScopes().contains(requestedScope), new OAuth2AuthenticationException(OAuth2ErrorCodes.INVALID_SCOPE));
         });
-        authorizedScopes = new LinkedHashSet<>(resourceOwnerBaseAuthentication.getScopes());
+        Set<String> authorizedScopes = new LinkedHashSet<>(resourceOwnerBaseAuthentication.getScopes());
 
-        Map<String, Object> reqParameters = resourceOwnerBaseAuthentication.getAdditionalParameters();
+        Map<String, Object> requestParameters = resourceOwnerBaseAuthentication.getAdditionalParameters();
         try {
+            //build authentication token
+            UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = buildToken(requestParameters);
 
-            UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = buildToken(reqParameters);
+            if (log.isDebugEnabled()) {
+                log.debug(">>> oauth2 authentication provider username password authentication token: {}", usernamePasswordAuthenticationToken);
+            }
 
-            log.debug("got usernamePasswordAuthenticationToken=" + usernamePasswordAuthenticationToken);
-
-            Authentication usernamePasswordAuthentication = authenticationManager
-                    .authenticate(usernamePasswordAuthenticationToken);
+            //获取全部认证信息
+            Authentication usernamePasswordAuthentication = authenticationManager.authenticate(usernamePasswordAuthenticationToken);
 
             // @formatter:off
             DefaultOAuth2TokenContext.Builder tokenContextBuilder = DefaultOAuth2TokenContext.builder()
@@ -109,23 +104,18 @@ public abstract class ZzzOauth2AuthenticationProvider<T extends ZzzOauth2Authent
             // ----- Access token -----
             OAuth2TokenContext tokenContext = tokenContextBuilder.tokenType(OAuth2TokenType.ACCESS_TOKEN).build();
             OAuth2Token generatedAccessToken = this.tokenGenerator.generate(tokenContext);
-            if (generatedAccessToken == null) {
-                OAuth2Error error = new OAuth2Error(OAuth2ErrorCodes.SERVER_ERROR,
-                        "The token generator failed to generate the access token.", ERROR_URI);
-                throw new OAuth2AuthenticationException(error);
-            }
+            Optional.ofNullable(generatedAccessToken).orElseThrow(() -> new OAuth2AuthenticationException(new OAuth2Error(OAuth2ErrorCodes.SERVER_ERROR, "oauth2 token generated failed", ERROR_URI)));
+
             OAuth2AccessToken accessToken = new OAuth2AccessToken(OAuth2AccessToken.TokenType.BEARER,
                     generatedAccessToken.getTokenValue(), generatedAccessToken.getIssuedAt(),
                     generatedAccessToken.getExpiresAt(), tokenContext.getAuthorizedScopes());
-            if (generatedAccessToken instanceof ClaimAccessor) {
+
+            if (generatedAccessToken instanceof ClaimAccessor claimAccessor) {
                 authorizationBuilder.id(accessToken.getTokenValue())
-                        .token(accessToken,
-                                (metadata) -> metadata.put(OAuth2Authorization.Token.CLAIMS_METADATA_NAME,
-                                        ((ClaimAccessor) generatedAccessToken).getClaims()))
+                        .token(accessToken, (metadata) -> metadata.put(OAuth2Authorization.Token.CLAIMS_METADATA_NAME, claimAccessor.getClaims()))
                         .attribute(OAuth2Authorization.AUTHORIZED_SCOPE_ATTRIBUTE_NAME, authorizedScopes)
                         .attribute(Principal.class.getName(), usernamePasswordAuthentication);
-            }
-            else {
+            } else {
                 authorizationBuilder.id(accessToken.getTokenValue()).accessToken(accessToken);
             }
 
@@ -135,37 +125,30 @@ public abstract class ZzzOauth2AuthenticationProvider<T extends ZzzOauth2Authent
                     // Do not issue refresh token to public client
                     !clientPrincipal.getClientAuthenticationMethod().equals(ClientAuthenticationMethod.NONE)) {
 
-                if (this.refreshTokenGenerator != null) {
-                    Instant issuedAt = Instant.now();
-                    Instant expiresAt = issuedAt.plus(registeredClient.getTokenSettings().getRefreshTokenTimeToLive());
-                    refreshToken = new OAuth2RefreshToken(this.refreshTokenGenerator.get(), issuedAt, expiresAt);
+                tokenContext = tokenContextBuilder.tokenType(OAuth2TokenType.REFRESH_TOKEN).build();
+                OAuth2Token generatedRefreshToken = this.tokenGenerator.generate(tokenContext);
+                if (!(generatedRefreshToken instanceof OAuth2RefreshToken)) {
+                    OAuth2Error error = new OAuth2Error(OAuth2ErrorCodes.SERVER_ERROR,
+                            "The token generator failed to generate the refresh token.", ERROR_URI);
+                    throw new OAuth2AuthenticationException(error);
                 }
-                else {
-                    tokenContext = tokenContextBuilder.tokenType(OAuth2TokenType.REFRESH_TOKEN).build();
-                    OAuth2Token generatedRefreshToken = this.tokenGenerator.generate(tokenContext);
-                    if (!(generatedRefreshToken instanceof OAuth2RefreshToken)) {
-                        OAuth2Error error = new OAuth2Error(OAuth2ErrorCodes.SERVER_ERROR,
-                                "The token generator failed to generate the refresh token.", ERROR_URI);
-                        throw new OAuth2AuthenticationException(error);
-                    }
-                    refreshToken = (OAuth2RefreshToken) generatedRefreshToken;
-                }
+                refreshToken = (OAuth2RefreshToken) generatedRefreshToken;
                 authorizationBuilder.refreshToken(refreshToken);
             }
 
             OAuth2Authorization authorization = authorizationBuilder.build();
-
             this.authorizationService.save(authorization);
 
-            LOGGER.debug("returning OAuth2AccessTokenAuthenticationToken");
+            if (log.isDebugEnabled()) {
+                log.debug(">>> ");
+            }
+
 
             return new OAuth2AccessTokenAuthenticationToken(registeredClient, clientPrincipal, accessToken,
                     refreshToken, Objects.requireNonNull(authorization.getAccessToken().getClaims()));
-
-        }
-        catch (Exception ex) {
-            LOGGER.error("problem in authenticate", ex);
-            throw oAuth2AuthenticationException(authentication, (AuthenticationException) ex);
+        } catch (Exception e) {
+            log.error(">>> authenticate error: {}", e.getMessage(), e);
+            throw oAuth2AuthenticationException(authentication, (AuthenticationException) e);
         }
     }
 
@@ -175,7 +158,12 @@ public abstract class ZzzOauth2AuthenticationProvider<T extends ZzzOauth2Authent
      */
     public abstract void checkClient(RegisteredClient registeredClient);
 
-    public abstract UsernamePasswordAuthenticationToken buildToken(Map<String, Object> reqParameters);
+    /**
+     * 构造账户密码认证令牌
+     * @param requestParameters
+     * @return
+     */
+    public abstract UsernamePasswordAuthenticationToken buildToken(Map<String, Object> requestParameters);
 
     @Override
     public boolean supports(Class<?> authentication) {
@@ -192,6 +180,19 @@ public abstract class ZzzOauth2AuthenticationProvider<T extends ZzzOauth2Authent
             return clientPrincipal;
         }
         throw new OAuth2AuthenticationException(OAuth2ErrorCodes.INVALID_CLIENT);
+    }
+
+
+    /**
+     * 登录异常转换为oauth2异常
+     * @param authentication 身份验证
+     * @param authenticationException 身份验证异常
+     * @return {@link OAuth2AuthenticationException}
+     */
+    private OAuth2AuthenticationException oAuth2AuthenticationException(Authentication authentication,
+                                                                        AuthenticationException authenticationException) {
+
+        return new OAuth2AuthenticationException("");
     }
 
 }

@@ -6,6 +6,7 @@ dependencies {
     implementation("com.zzz.framework:framework-cache:${zzzFrameworkVersion}")
     implementation("com.zzz.framework:framework-data:${zzzFrameworkVersion}")
     implementation("com.zzz.framework:framework-web:${zzzFrameworkVersion}")
+    implementation("com.zzz.framework:framework-feign:${zzzFrameworkVersion}")
     implementation("com.zzz.framework:framework-security:${zzzFrameworkVersion}")
     implementation("com.alibaba.cloud:spring-cloud-starter-alibaba-nacos-discovery")
     implementation("com.alibaba.cloud:spring-cloud-starter-alibaba-nacos-config")

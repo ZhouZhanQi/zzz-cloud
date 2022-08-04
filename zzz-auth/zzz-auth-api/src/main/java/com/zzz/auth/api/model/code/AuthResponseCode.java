@@ -37,6 +37,12 @@ public enum AuthResponseCode implements BaseExceptionCode {
 
     INVALID_GRANT_ERROR(104014, "认证失败, grant信息错误"),
 
+    AUTHENTICATION_SERVICE_IS_NULL(104015, "认证服务不能为空"),
+
+    AUTHENTICATION_SCOPE_IS_EMPTY(104017, "认证作用域不能为空"),
+
+    TOKEN_GENERATOR_IS_NULL(104016, "token生成器不能为空"),
+
     USERNAME_OR_PASSWORD_ERROR(104015, "用户名或密码错误"),
 
     SMS_CODE_AUTH_PARAM_EMPTY(105001, "请输入手机验证码"),

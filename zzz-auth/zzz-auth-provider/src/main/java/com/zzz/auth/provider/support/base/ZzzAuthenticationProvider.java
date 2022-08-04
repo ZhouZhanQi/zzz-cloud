@@ -37,7 +37,7 @@ public class ZzzAuthenticationProvider extends AbstractUserDetailsAuthentication
     @Setter
     private PasswordEncoder passwordEncoder;
 
-    private final static BasicAuthenticationConverter basicConvert = new BasicAuthenticationConverter();
+    private final static BasicAuthenticationConverter BASIC_CONVERT = new BasicAuthenticationConverter();
 
     public ZzzAuthenticationProvider() {
         //初始化password encoder
@@ -68,7 +68,7 @@ public class ZzzAuthenticationProvider extends AbstractUserDetailsAuthentication
         Map<String, String> paramMap = ServletUtils.getServletRequestParamMap(request);
 
         String grantType = paramMap.get(OAuth2ParameterNames.GRANT_TYPE);
-        String clientId = StrUtil.isBlank(paramMap.get(OAuth2ParameterNames.CLIENT_ID)) ? basicConvert.convert(request).getName() : paramMap.get(OAuth2ParameterNames.CLIENT_ID);
+        String clientId = StrUtil.isBlank(paramMap.get(OAuth2ParameterNames.CLIENT_ID)) ? BASIC_CONVERT.convert(request).getName() : paramMap.get(OAuth2ParameterNames.CLIENT_ID);
 
         Map<String, ZzzUserDetailService> userDetailServiceMap = SpringUtil.getBeansOfType(ZzzUserDetailService.class);
         UserDetails userDetails  = userDetailServiceMap.values().stream()

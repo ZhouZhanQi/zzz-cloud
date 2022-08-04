@@ -7,9 +7,11 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.core.OAuth2AccessToken;
 import org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
+import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
 import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenGenerator;
 
 import java.util.Map;
@@ -36,9 +38,19 @@ public class OAuth2ResourceOwnerPwdAuthenticationProvider extends ZzzOauth2Authe
     }
 
     @Override
-    public UsernamePasswordAuthenticationToken buildToken(Map<String, Object> reqParameters) {
-        String username = (String) reqParameters.get(OAuth2ParameterNames.USERNAME);
-        String password = (String) reqParameters.get(OAuth2ParameterNames.PASSWORD);
+    public void checkClient(RegisteredClient registeredClient) {
+
+    }
+
+    @Override
+    public UsernamePasswordAuthenticationToken buildToken(Map<String, Object> requestParameters) {
+        String username = (String) requestParameters.get(OAuth2ParameterNames.USERNAME);
+        String password = (String) requestParameters.get(OAuth2ParameterNames.PASSWORD);
         return new UsernamePasswordAuthenticationToken(username, password);
+    }
+
+
+    public static void main(String[] args) {
+        System.out.println(new BCryptPasswordEncoder().encode("123456"));
     }
 }

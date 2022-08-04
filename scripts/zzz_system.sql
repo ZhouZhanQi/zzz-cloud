@@ -2,7 +2,7 @@ CREATE TABLE sys_user
 (
     id              BIGINT(20) NOT NULL AUTO_INCREMENT COMMENT '主键Id;主键Id',
     user_name       VARCHAR(32) NOT NULL COMMENT '用户名;用户名',
-    password        VARCHAR(64) NOT NULL COMMENT '密码;密码',
+    password        VARCHAR(256) NOT NULL COMMENT '密码;密码',
     nickname        VARCHAR(64) COMMENT '昵称;昵称',
     real_name       VARCHAR(64) COMMENT '真实姓名;真实姓名',
     mobile_phone    CHAR(11) COMMENT '手机号码;手机号码',
