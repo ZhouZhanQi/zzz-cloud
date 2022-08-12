@@ -48,9 +48,4 @@ public class OAuth2ResourceOwnerPwdAuthenticationProvider extends ZzzOauth2Authe
         String password = (String) requestParameters.get(OAuth2ParameterNames.PASSWORD);
         return new UsernamePasswordAuthenticationToken(username, password);
     }
-
-
-    public static void main(String[] args) {
-        System.out.println(new BCryptPasswordEncoder().encode("123456"));
-    }
 }

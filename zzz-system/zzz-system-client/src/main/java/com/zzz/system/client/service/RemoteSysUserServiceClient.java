@@ -10,12 +10,15 @@ import org.springframework.stereotype.Component;
 
 /**
  * 用户信息远程调用客户端
+ * @author zhouzhanqi
  */
-@FeignClient(name = ZzzSystemConstant.SERVICE_NAME, fallback = RemoteSysUserServiceClient.FallBack.class)
+@FeignClient(contextId = "remoteSysUserService", name = ZzzSystemConstant.SERVICE_NAME, path = "/zzz-system", fallback = RemoteSysUserServiceClient.Fallback.class)
 public interface RemoteSysUserServiceClient extends RemoteSysUserService {
 
+
     @Component
-    public class FallBack implements RemoteSysUserServiceClient {
+    public static class Fallback implements RemoteSysUserServiceClient {
+
         @Override
         public ResponseData<SysUser> getById(Long id) {
             return null;
@@ -31,4 +34,5 @@ public interface RemoteSysUserServiceClient extends RemoteSysUserService {
             return null;
         }
     }
+
 }

@@ -1,21 +1,16 @@
 package com.zzz.auth.provider.support.customize;
 
 import cn.hutool.core.util.StrUtil;
-import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.zzz.framework.common.util.AssertUtils;
 import com.zzz.framework.starter.core.utils.ServletUtils;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
 import org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames;
 import org.springframework.security.web.authentication.AuthenticationConverter;
 import org.springframework.util.MultiValueMap;
-import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;

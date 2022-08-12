@@ -17,8 +17,8 @@ import org.springframework.context.annotation.ComponentScans;
 @EnableZzzCache
 @SpringBootApplication
 @EnableDiscoveryClient
-@EnableFeignClients
-@ComponentScan(value = {"com.zzz.*.client.**", "com.zzz.auth"})
+@EnableFeignClients(basePackages = {"com.zzz.*.client.service"})
+@ComponentScan(value = {"com.zzz.auth", "com.zzz.*.client.service"})
 public class ZzzAuthApplication {
 
     public static void main(String[] args) {

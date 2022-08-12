@@ -56,7 +56,7 @@ public class ZzzAuthenticationProvider extends AbstractUserDetailsAuthentication
         switch (GrantTypeEnum.fromKey(grantType)) {
             case PASSWORD -> {
                 String presentedPassword = authentication.getCredentials().toString();
-                AssertUtils.checkArgument(this.passwordEncoder.matches(presentedPassword, userDetails.getPassword()), AuthResponseCode.USERNAME_OR_PASSWORD_ERROR);
+                AssertUtils.checkArgument(this.passwordEncoder.matches(presentedPassword, userDetails.getPassword()), () -> new BusinessException(AuthResponseCode.USERNAME_OR_PASSWORD_ERROR));
             }
         }
     }

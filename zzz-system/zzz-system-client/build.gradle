@@ -3,5 +3,5 @@ version '1.0-SNAPSHOT'
 
 dependencies {
     api project(':zzz-system:zzz-system-api')
-    api("com.zzz.framework:framework-feign:${zzzFrameworkVersion}")
+    implementation("com.zzz.framework:framework-feign:${zzzFrameworkVersion}")
 }

@@ -138,12 +138,6 @@ public abstract class ZzzOauth2AuthenticationProvider<T extends ZzzOauth2Authent
 
             OAuth2Authorization authorization = authorizationBuilder.build();
             this.authorizationService.save(authorization);
-
-            if (log.isDebugEnabled()) {
-                log.debug(">>> ");
-            }
-
-
             return new OAuth2AccessTokenAuthenticationToken(registeredClient, clientPrincipal, accessToken,
                     refreshToken, Objects.requireNonNull(authorization.getAccessToken().getClaims()));
         } catch (Exception e) {

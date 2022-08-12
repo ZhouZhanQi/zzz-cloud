@@ -75,7 +75,7 @@ public class ZzzAuthorizationServerConfig {
         DefaultSecurityFilterChain securityFilterChain = http.requestMatcher(authorizationServerConfigurer.getEndpointsMatcher())
                 .authorizeRequests(authorizeRequests -> authorizeRequests.anyRequest().authenticated())
                 .csrf().disable()
-//                .csrf(csrf ->  csrf.ignoringRequestMatchers(authorizationServerConfigurer.getEndpointsMatcher()))
+                .csrf(csrf ->  csrf.ignoringRequestMatchers(authorizationServerConfigurer.getEndpointsMatcher()))
                 .apply(authorizationServerConfigurer.authorizationService(oAuth2AuthorizationService)// redis存储token的实现
                         .providerSettings(ProviderSettings.builder().build()))
                 .and().formLogin(Customizer.withDefaults()).build();

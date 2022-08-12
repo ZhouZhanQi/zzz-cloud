@@ -5,9 +5,7 @@ import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 
-import java.util.Collections;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author: zhouzq
@@ -41,8 +39,8 @@ public abstract class ZzzOauth2AuthenticationToken extends AbstractAuthenticatio
         super(Collections.emptyList());
         this.authorizationGrantType = authorizationGrantType;
         this.clientPrincipal = clientPrincipal;
-        this.scopes = scopes;
-        this.additionalParameters = additionalParameters;
+        this.scopes = Collections.unmodifiableSet(scopes != null ? new HashSet<>(scopes) : Collections.emptySet());
+        this.additionalParameters = Collections.unmodifiableMap(additionalParameters != null ? new HashMap<>(additionalParameters) : Collections.emptyMap());
     }
 
     /**

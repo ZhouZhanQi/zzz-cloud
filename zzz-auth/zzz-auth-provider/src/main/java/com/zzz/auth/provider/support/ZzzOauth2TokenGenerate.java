@@ -81,11 +81,7 @@ public class ZzzOauth2TokenGenerate implements OAuth2TokenGenerator<OAuth2Access
         }
 
         OAuth2TokenClaimsSet accessTokenClaimsSet = claimsBuilder.build();
-        // 组装key token:client:username:uuid
-        String key = String.format("%s::%s::%s", SecurityContextHolder.getContext().getAuthentication().getPrincipal(),
-                context.getPrincipal().getName(), UUID.fastUUID());
-
-        return new ZzzOauth2TokenGenerate.OAuth2AccessTokenClaims(OAuth2AccessToken.TokenType.BEARER, key,
+        return new ZzzOauth2TokenGenerate.OAuth2AccessTokenClaims(OAuth2AccessToken.TokenType.BEARER, UUID.fastUUID().toString(),
                 accessTokenClaimsSet.getIssuedAt(), accessTokenClaimsSet.getExpiresAt(), context.getAuthorizedScopes(),
                 accessTokenClaimsSet.getClaims());
     }

@@ -6,10 +6,7 @@ import com.zzz.framework.starter.core.utils.ServletUtils;
 import com.zzz.system.api.model.enums.GrantTypeEnum;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
-import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
 import org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames;
-import org.springframework.util.MultiValueMap;
-import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
@@ -31,7 +28,7 @@ public class OAuth2ResourceOwnerPwdAuthenticationConvert extends ZzzOauth2Authen
 
     @Override
     public boolean support(String grantType) {
-        return GrantTypeEnum.PASSWORD.getKey().equals(grantType);
+        return AuthorizationGrantType.PASSWORD.getValue().equals(grantType);
     }
 
     @Override

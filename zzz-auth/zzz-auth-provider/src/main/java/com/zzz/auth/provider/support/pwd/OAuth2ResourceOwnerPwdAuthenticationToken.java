@@ -1,9 +1,13 @@
 package com.zzz.auth.provider.support.pwd;
 
 import com.zzz.auth.provider.support.customize.ZzzOauth2AuthenticationToken;
+import lombok.Getter;
+import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
