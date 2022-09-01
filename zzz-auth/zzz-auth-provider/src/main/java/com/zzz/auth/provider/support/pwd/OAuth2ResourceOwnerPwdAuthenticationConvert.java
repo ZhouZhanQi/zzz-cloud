@@ -33,7 +33,6 @@ public class OAuth2ResourceOwnerPwdAuthenticationConvert extends ZzzOauth2Authen
 
     @Override
     public void checkRequestParam(HttpServletRequest request) {
-
         Map<String, String> requestParam = ServletUtils.getServletRequestParamMap(request);
         if (StrUtil.hasBlank(requestParam.get(OAuth2ParameterNames.USERNAME), requestParam.get(OAuth2ParameterNames.PASSWORD))) {
 

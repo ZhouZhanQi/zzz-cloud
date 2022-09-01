@@ -4,8 +4,15 @@ package com.zzz.system.api.service;
 import com.zzz.framework.starter.core.model.ResponseData;
 import com.zzz.system.api.model.bo.SysUserBo;
 import com.zzz.system.api.model.domain.SysUser;
+import com.zzz.system.api.model.dto.SysUserDTO;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+
+import javax.validation.Valid;
+import javax.validation.constraints.NotEmpty;
 
 public interface RemoteSysUserService {
 
@@ -23,7 +30,7 @@ public interface RemoteSysUserService {
      * @return
      */
     @GetMapping(name = "获取用户全部信息-根据用户名", value = "sysUser/fullInfo-username/{username}")
-    public ResponseData<SysUserBo> getFullInfoByUsername(@PathVariable("username") String username);
+    public ResponseData<SysUserBo> getFullInfoByUsername(@PathVariable("username") @NotEmpty(message = "") String username);
 
     /**
      * 根据手机号获取用户信息
@@ -31,6 +38,14 @@ public interface RemoteSysUserService {
      * @return
      */
     @GetMapping(name = "获取用户全部信息-根据手机号", value = "sysUser/fullInfo-mobilePhone/{mobilePhone}")
-    public ResponseData<SysUserBo> getFullInfoByMobilePhone(@PathVariable("mobilePhone") String mobilePhone);
+    public ResponseData<SysUserBo> getFullInfoByMobilePhone(@PathVariable("mobilePhone") @NotEmpty(message = "") String mobilePhone);
+
+
+    /**
+     * 创建用户信息
+     * @return
+     */
+    @PostMapping(name = "创建用户信息", value = "sysUser")
+    public ResponseData<SysUser> createSysUser(@RequestBody @Validated SysUserDTO sysUser);
 
 }

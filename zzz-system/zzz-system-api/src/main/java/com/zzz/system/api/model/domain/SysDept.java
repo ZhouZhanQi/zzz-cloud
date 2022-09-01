@@ -1,7 +1,7 @@
 package com.zzz.system.api.model.domain;
 
 import com.baomidou.mybatisplus.annotation.TableField;
-import com.zzz.framework.starter.data.model.BaseModel;
+import com.zzz.framework.starter.core.model.BaseModel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 

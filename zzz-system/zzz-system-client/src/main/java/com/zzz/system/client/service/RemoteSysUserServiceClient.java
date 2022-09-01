@@ -4,6 +4,7 @@ import com.zzz.framework.starter.core.model.ResponseData;
 import com.zzz.system.api.model.bo.SysUserBo;
 import com.zzz.system.api.model.constants.ZzzSystemConstant;
 import com.zzz.system.api.model.domain.SysUser;
+import com.zzz.system.api.model.dto.SysUserDTO;
 import com.zzz.system.api.service.RemoteSysUserService;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.stereotype.Component;
@@ -31,6 +32,11 @@ public interface RemoteSysUserServiceClient extends RemoteSysUserService {
 
         @Override
         public ResponseData<SysUserBo> getFullInfoByMobilePhone(String mobilePhone) {
+            return null;
+        }
+
+        @Override
+        public ResponseData<SysUser> createSysUser(SysUserDTO sysUser) {
             return null;
         }
     }

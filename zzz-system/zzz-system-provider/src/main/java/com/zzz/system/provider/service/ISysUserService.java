@@ -3,6 +3,7 @@ package com.zzz.system.provider.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zzz.system.api.model.bo.SysUserBo;
 import com.zzz.system.api.model.domain.SysUser;
+import com.zzz.system.api.model.dto.SysUserDTO;
 
 /**
  * <p>
@@ -29,4 +30,12 @@ public interface ISysUserService extends IService<SysUser> {
      * @return
      */
     SysUserBo loadUserDetailByMobilePhone(String mobilePhone);
+
+
+    /**
+     * 用户信息创建
+     * @param sysUser
+     * @return
+     */
+    SysUserDTO sysUserCreate(SysUserDTO sysUser);
 }

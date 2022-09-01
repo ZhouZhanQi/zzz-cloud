@@ -1,5 +1,7 @@
 package com.zzz.system.provider.service.impl;
 
+import cn.hutool.core.builder.Builder;
+import cn.hutool.core.builder.GenericBuilder;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zzz.framework.common.exceptions.BusinessException;
@@ -11,14 +13,20 @@ import com.zzz.system.api.model.domain.SysDept;
 import com.zzz.system.api.model.domain.SysPost;
 import com.zzz.system.api.model.domain.SysTenant;
 import com.zzz.system.api.model.domain.SysUser;
+import com.zzz.system.api.model.domain.SysUserPost;
+import com.zzz.system.api.model.dto.SysUserDTO;
 import com.zzz.system.provider.mapper.SysUserMapper;
 import com.zzz.system.provider.service.ISysDeptService;
 import com.zzz.system.provider.service.ISysPostService;
 import com.zzz.system.provider.service.ISysTenantService;
+import com.zzz.system.provider.service.ISysUserPostService;
 import com.zzz.system.provider.service.ISysUserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 /**
@@ -41,6 +49,9 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     private final ISysTenantService sysTenantService;
 
 
+    private final ISysUserPostService sysUserPostService;
+
+
     @Override
     public SysUserBo loadUserDetailByUsername(String username) {
         SysUser sysUser = this.baseMapper.selectOneIgnoreTenant(Wrappers.lambdaQuery(SysUser.class).eq(SysUser::getUserName, username));
@@ -51,6 +62,27 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     public SysUserBo loadUserDetailByMobilePhone(String mobilePhone) {
         SysUser sysUser = this.baseMapper.selectOneIgnoreTenant(Wrappers.lambdaQuery(SysUser.class).eq(SysUser::getMobilePhone, mobilePhone));
         return completionSysUserData(sysUser);
+    }
+
+    @Override
+    public SysUserDTO sysUserCreate(SysUserDTO sysUser) {
+        this.save(sysUser);
+
+
+        /**
+         * 用户职位关联信息保存
+         */
+        List<SysUserPost> userPostList = sysUser.getPostIdList().stream().map(postId -> {
+            return GenericBuilder.of(SysUserPost::new)
+                    .with(SysUserPost::setUserId, sysUser.getId())
+                    .with(SysUserPost::setPostId, postId)
+                    .build();
+        }).collect(Collectors.toList());
+
+        //保存职位关联信息
+        sysUserPostService.saveBatch(userPostList);
+        //
+        return sysUser;
     }
 
     /**

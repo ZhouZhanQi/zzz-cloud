@@ -2,6 +2,7 @@ package com.zzz.system.provider.controller;
 
 import com.zzz.framework.starter.core.model.ResponseData;
 import com.zzz.system.api.model.bo.SysUserBo;
+import com.zzz.system.api.model.dto.SysUserDTO;
 import com.zzz.system.api.service.RemoteSysUserService;
 import com.zzz.system.api.model.domain.SysUser;
 import com.zzz.system.provider.mapper.SysUserMapper;
@@ -31,5 +32,10 @@ public class SysUserController implements RemoteSysUserService {
     @Override
     public ResponseData<SysUserBo> getFullInfoByMobilePhone(String mobilePhone) {
         return ResponseData.success(sysUserService.loadUserDetailByMobilePhone(mobilePhone));
+    }
+
+    @Override
+    public ResponseData<SysUser> createSysUser(SysUserDTO sysUser) {
+        return null;
     }
 }
