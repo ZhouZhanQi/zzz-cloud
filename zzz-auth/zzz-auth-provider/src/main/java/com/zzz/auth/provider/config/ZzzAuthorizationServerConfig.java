@@ -44,14 +44,12 @@ import org.springframework.security.web.authentication.AuthenticationConverter;
 import java.security.KeyPair;
 import java.security.interfaces.RSAPublicKey;
 
-import static org.springframework.security.config.Customizer.withDefaults;
-
 /**
  * @author: zhouzq
  * @date: 2022/7/11-15:57
  * @desc:
  */
-@Configuration(proxyBeanMethods = true)
+@Configuration(proxyBeanMethods = false)
 @RequiredArgsConstructor
 public class ZzzAuthorizationServerConfig {
 

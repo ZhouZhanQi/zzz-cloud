@@ -5,7 +5,7 @@ dependencies {
     implementation("com.zzz.framework:framework-util:${zzzFrameworkUtilVersion}")
     implementation("com.zzz.framework:framework-core:${zzzFrameworkVersion}")
     implementation("com.zzz.framework:framework-cache:${zzzFrameworkVersion}")
-
+    implementation("com.zzz.framework:framework-security:${zzzFrameworkVersion}")
     implementation("com.alibaba.cloud:spring-cloud-starter-alibaba-nacos-discovery") {
         exclude group: "org.springframework.cloud", module: "spring-cloud-starter-netflix-ribbon"
     }

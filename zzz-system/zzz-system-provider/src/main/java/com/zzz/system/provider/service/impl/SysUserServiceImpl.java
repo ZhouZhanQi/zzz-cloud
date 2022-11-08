@@ -79,9 +79,13 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
                     .build();
         }).collect(Collectors.toList());
 
+
+        //
+
         //保存职位关联信息
         sysUserPostService.saveBatch(userPostList);
-        //
+        //保存角色关联信息
+
         return sysUser;
     }
 

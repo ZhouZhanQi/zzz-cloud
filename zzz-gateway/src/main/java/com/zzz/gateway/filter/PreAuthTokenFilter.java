@@ -1,5 +1,6 @@
 package com.zzz.gateway.filter;
 
+import com.zzz.framework.common.util.AssertUtils;
 import com.zzz.gateway.model.constants.FilterOrderedConstants;
 import com.zzz.gateway.props.ZzzGatewayProperties;
 import lombok.RequiredArgsConstructor;
@@ -8,6 +9,9 @@ import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.server.reactive.ServerHttpRequest;
+import org.springframework.security.oauth2.core.OAuth2TokenType;
+import org.springframework.security.oauth2.server.authorization.OAuth2Authorization;
+import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
 import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.util.PathMatcher;
@@ -27,6 +31,8 @@ public class PreAuthTokenFilter implements GlobalFilter, Ordered {
 
     private final ZzzGatewayProperties securityProperties;
 
+    private final OAuth2AuthorizationService oAuth2AuthorizationService;
+
     /**
      * 请求地址匹配
      */
@@ -43,10 +49,18 @@ public class PreAuthTokenFilter implements GlobalFilter, Ordered {
 
         String authorization = request.getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
 
+        OAuth2Authorization oAuth2Authorization = oAuth2AuthorizationService.findByToken(authorization, OAuth2TokenType.ACCESS_TOKEN);
+        //校验token正确性
+//        AssertUtils.checkNotNull(oAuth2Authorization, )
+
+
         //校验token
         if (matchPublicUrl(requestPath)) {
             return chain.filter(exchange);
         }
+
+
+
         //校验地址是否需要权限
         return chain.filter(exchange);
     }

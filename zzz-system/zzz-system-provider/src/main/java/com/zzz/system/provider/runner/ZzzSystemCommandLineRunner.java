@@ -2,8 +2,8 @@ package com.zzz.system.provider.runner;
 
 import cn.hutool.core.bean.BeanUtil;
 import com.zzz.framework.starter.cache.RedisCacheHelper;
-import com.zzz.framework.starters.security.model.bo.ClientDetailBo;
-import com.zzz.framework.starters.security.model.code.SecurityRedisKeyPrefix;
+import com.zzz.framework.starter.security.model.bo.ClientDetailBo;
+import com.zzz.framework.starter.security.model.code.SecurityRedisKeyPrefix;
 import com.zzz.system.api.model.domain.SysClient;
 import com.zzz.system.provider.service.ISysClientService;
 import lombok.RequiredArgsConstructor;

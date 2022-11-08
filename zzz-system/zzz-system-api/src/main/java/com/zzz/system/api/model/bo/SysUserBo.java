@@ -8,6 +8,7 @@ import com.zzz.system.api.model.domain.SysTenant;
 import com.zzz.system.api.model.domain.SysUser;
 import lombok.*;
 
+import java.io.Serial;
 import java.util.List;
 
 /**
@@ -21,6 +22,9 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SysUserBo extends SysUser {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     /**
      * 部门信息

@@ -19,6 +19,11 @@ import org.apache.ibatis.annotations.Select;
 @Mapper
 public interface SysUserMapper extends BaseMapper<SysUser> {
 
+    /**
+     * 忽略租户查询
+     * @param queryWrapper
+     * @return
+     */
     @InterceptorIgnore(tenantLine = "true")
     @Select("select * from sys_user ${ew.customSqlSegment}")
     SysUser selectOneIgnoreTenant(@Param("ew") Wrapper<SysUser> queryWrapper);

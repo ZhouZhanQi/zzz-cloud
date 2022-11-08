@@ -1,6 +1,5 @@
 package com.zzz.system.provider;
 
-import com.zzz.framework.starter.cache.annotation.EnableZzzCache;
 import com.zzz.framework.starter.core.listener.LoggingListener;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -11,7 +10,6 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
  * @date 2022/6/25 19:03
  * @desc
  */
-@EnableZzzCache
 @EnableDiscoveryClient
 @SpringBootApplication
 public class ZzzSystemApplication {

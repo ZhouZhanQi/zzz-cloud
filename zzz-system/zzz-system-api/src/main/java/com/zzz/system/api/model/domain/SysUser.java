@@ -73,6 +73,12 @@ public class SysUser extends BaseModel {
     private Long tenantId;
 
     /**
+     * 部门Id
+     */
+    @TableField("dept_id")
+    private Long deptId;
+
+    /**
      * 最后登录Ip
      */
     @TableField("last_login_ip")
