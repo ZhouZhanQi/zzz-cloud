@@ -1,28 +1,33 @@
 package com.zzz.auth.provider.support.customize;
 
-import cn.hutool.core.builder.Builder;
 import com.zzz.auth.api.model.code.AuthResponseCode;
 import com.zzz.framework.common.util.AssertUtils;
+import com.zzz.framework.starter.cache.RedisCacheHelper;
+import com.zzz.framework.starter.core.model.ZzzUser;
+import com.zzz.framework.starter.core.model.enums.CommonKeyPrefix;
+import com.zzz.framework.starter.security.model.bo.ZzzUserDetail;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.authentication.*;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.oauth2.core.*;
 import org.springframework.security.oauth2.server.authorization.OAuth2Authorization;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
+import org.springframework.security.oauth2.server.authorization.OAuth2TokenType;
 import org.springframework.security.oauth2.server.authorization.authentication.OAuth2AccessTokenAuthenticationToken;
 import org.springframework.security.oauth2.server.authorization.authentication.OAuth2ClientAuthenticationToken;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
-import org.springframework.security.oauth2.server.authorization.context.ProviderContextHolder;
+import org.springframework.security.oauth2.server.authorization.context.AuthorizationServerContextHolder;
 import org.springframework.security.oauth2.server.authorization.token.DefaultOAuth2TokenContext;
 import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenContext;
 import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenGenerator;
 import org.springframework.util.CollectionUtils;
 
 import java.security.Principal;
-import java.time.Instant;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author: zhouzq
@@ -41,14 +46,19 @@ public abstract class ZzzOauth2AuthenticationProvider<T extends ZzzOauth2Authent
 
     private final AuthenticationManager authenticationManager;
 
+
+    private final RedisCacheHelper<ZzzUser> redisCacheHelper;
+
     public ZzzOauth2AuthenticationProvider(AuthenticationManager authenticationManager,
                                            OAuth2AuthorizationService authorizationService,
-                                           OAuth2TokenGenerator<? extends OAuth2Token> tokenGenerator) {
+                                           OAuth2TokenGenerator<? extends OAuth2Token> tokenGenerator,
+                                           RedisCacheHelper<ZzzUser> redisCacheHelper) {
         AssertUtils.checkNotNull(authorizationService, AuthResponseCode.AUTHENTICATION_SERVICE_IS_NULL);
         AssertUtils.checkNotNull(tokenGenerator, AuthResponseCode.TOKEN_GENERATOR_IS_NULL);
         this.authenticationManager = authenticationManager;
         this.authorizationService = authorizationService;
         this.tokenGenerator = tokenGenerator;
+        this.redisCacheHelper = redisCacheHelper;
     }
 
     /**
@@ -90,7 +100,7 @@ public abstract class ZzzOauth2AuthenticationProvider<T extends ZzzOauth2Authent
             DefaultOAuth2TokenContext.Builder tokenContextBuilder = DefaultOAuth2TokenContext.builder()
                     .registeredClient(registeredClient)
                     .principal(usernamePasswordAuthentication)
-                    .providerContext(ProviderContextHolder.getProviderContext())
+                    .authorizationServerContext(AuthorizationServerContextHolder.getContext())
                     .authorizedScopes(authorizedScopes)
                     .authorizationGrantType(AuthorizationGrantType.PASSWORD)
                     .authorizationGrant(resourceOwnerBaseAuthentication);
@@ -99,7 +109,7 @@ public abstract class ZzzOauth2AuthenticationProvider<T extends ZzzOauth2Authent
             OAuth2Authorization.Builder authorizationBuilder = OAuth2Authorization
                     .withRegisteredClient(registeredClient).principalName(usernamePasswordAuthentication.getName())
                     .authorizationGrantType(AuthorizationGrantType.PASSWORD)
-                    .attribute(OAuth2Authorization.AUTHORIZED_SCOPE_ATTRIBUTE_NAME, authorizedScopes);
+                    .authorizedScopes(authorizedScopes);
 
             // ----- Access token -----
             OAuth2TokenContext tokenContext = tokenContextBuilder.tokenType(OAuth2TokenType.ACCESS_TOKEN).build();
@@ -113,7 +123,7 @@ public abstract class ZzzOauth2AuthenticationProvider<T extends ZzzOauth2Authent
             if (generatedAccessToken instanceof ClaimAccessor claimAccessor) {
                 authorizationBuilder.id(accessToken.getTokenValue())
                         .token(accessToken, (metadata) -> metadata.put(OAuth2Authorization.Token.CLAIMS_METADATA_NAME, claimAccessor.getClaims()))
-                        .attribute(OAuth2Authorization.AUTHORIZED_SCOPE_ATTRIBUTE_NAME, authorizedScopes)
+                        .authorizedScopes(authorizedScopes)
                         .attribute(Principal.class.getName(), usernamePasswordAuthentication);
             } else {
                 authorizationBuilder.id(accessToken.getTokenValue()).accessToken(accessToken);
@@ -138,6 +148,10 @@ public abstract class ZzzOauth2AuthenticationProvider<T extends ZzzOauth2Authent
 
             OAuth2Authorization authorization = authorizationBuilder.build();
             this.authorizationService.save(authorization);
+
+            //afterauth会删除此缓存
+            ZzzUserDetail userDetail = (ZzzUserDetail)usernamePasswordAuthentication.getPrincipal();
+            redisCacheHelper.set(CommonKeyPrefix.ZZZ_USER_INFO, accessToken.getTokenValue(), userDetail.getZzzUser(), 3, TimeUnit.HOURS);
             return new OAuth2AccessTokenAuthenticationToken(registeredClient, clientPrincipal, accessToken,
                     refreshToken, Objects.requireNonNull(authorization.getAccessToken().getClaims()));
         } catch (Exception e) {

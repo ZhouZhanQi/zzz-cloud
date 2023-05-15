@@ -30,7 +30,7 @@ public interface RemoteSysUserService {
      * @return
      */
     @GetMapping(name = "获取用户全部信息-根据用户名", value = "sysUser/fullInfo-username/{username}")
-    public ResponseData<SysUserBo> getFullInfoByUsername(@PathVariable("username") @NotEmpty(message = "") String username);
+    public ResponseData<SysUserBo> getFullInfoByUsername(@PathVariable("username") @NotEmpty(message = "用户名不能为空") String username);
 
     /**
      * 根据手机号获取用户信息
@@ -38,7 +38,7 @@ public interface RemoteSysUserService {
      * @return
      */
     @GetMapping(name = "获取用户全部信息-根据手机号", value = "sysUser/fullInfo-mobilePhone/{mobilePhone}")
-    public ResponseData<SysUserBo> getFullInfoByMobilePhone(@PathVariable("mobilePhone") @NotEmpty(message = "") String mobilePhone);
+    public ResponseData<SysUserBo> getFullInfoByMobilePhone(@PathVariable("mobilePhone") @NotEmpty(message = "手机号码不能为空") String mobilePhone);
 
 
     /**

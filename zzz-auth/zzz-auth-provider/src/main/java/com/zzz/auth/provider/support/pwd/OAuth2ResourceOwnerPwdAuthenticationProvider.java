@@ -1,6 +1,9 @@
 package com.zzz.auth.provider.support.pwd;
 
 import com.zzz.auth.provider.support.customize.ZzzOauth2AuthenticationProvider;
+import com.zzz.framework.starter.cache.RedisCacheHelper;
+import com.zzz.framework.starter.core.model.ZzzUser;
+import com.zzz.framework.starter.security.model.bo.ZzzUserDetail;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -24,8 +27,8 @@ import java.util.Map;
 @Slf4j
 public class OAuth2ResourceOwnerPwdAuthenticationProvider extends ZzzOauth2AuthenticationProvider<OAuth2ResourceOwnerPwdAuthenticationToken> {
 
-    public OAuth2ResourceOwnerPwdAuthenticationProvider(AuthenticationManager authenticationManager, OAuth2AuthorizationService oAuth2AuthorizationService, OAuth2TokenGenerator<OAuth2AccessToken> oAuth2TokenGenerator) {
-        super(authenticationManager, oAuth2AuthorizationService, oAuth2TokenGenerator);
+    public OAuth2ResourceOwnerPwdAuthenticationProvider(AuthenticationManager authenticationManager, OAuth2AuthorizationService oAuth2AuthorizationService, OAuth2TokenGenerator<OAuth2AccessToken> oAuth2TokenGenerator, RedisCacheHelper<ZzzUser> redisCacheHelper) {
+        super(authenticationManager, oAuth2AuthorizationService, oAuth2TokenGenerator, redisCacheHelper);
     }
 
     @Override

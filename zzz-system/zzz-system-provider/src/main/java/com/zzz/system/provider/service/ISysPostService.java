@@ -21,4 +21,12 @@ public interface ISysPostService extends IService<SysPost> {
      */
     SysPost getByUserId(Long userId);
 
+
+    /**
+     * 创建职位信息
+     * @param sysPost
+     * @return
+     */
+    SysPost createSysPost(SysPost sysPost);
+
 }

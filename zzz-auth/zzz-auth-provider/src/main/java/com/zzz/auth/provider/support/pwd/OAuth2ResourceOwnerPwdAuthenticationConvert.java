@@ -19,13 +19,6 @@ import java.util.Set;
  */
 public class OAuth2ResourceOwnerPwdAuthenticationConvert extends ZzzOauth2AuthenticationConvert<OAuth2ResourceOwnerPwdAuthenticationToken> {
 
-
-
-//    @Override
-//    public Authentication convert(HttpServletRequest request) {
-//        return null;
-//    }
-
     @Override
     public boolean support(String grantType) {
         return AuthorizationGrantType.PASSWORD.getValue().equals(grantType);

@@ -1,20 +1,25 @@
 package com.zzz.gateway.filter;
 
+import com.zzz.framework.common.exceptions.BusinessException;
 import com.zzz.framework.common.util.AssertUtils;
+import com.zzz.framework.starter.security.model.code.SecurityExceptionCode;
 import com.zzz.gateway.model.constants.FilterOrderedConstants;
 import com.zzz.gateway.props.ZzzGatewayProperties;
+import com.zzz.gateway.util.AccessTokenUtils;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.server.reactive.ServerHttpRequest;
-import org.springframework.security.oauth2.core.OAuth2TokenType;
 import org.springframework.security.oauth2.server.authorization.OAuth2Authorization;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
+import org.springframework.security.oauth2.server.authorization.OAuth2TokenType;
 import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.util.PathMatcher;
+import org.springframework.util.StringUtils;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
@@ -36,7 +41,7 @@ public class PreAuthTokenFilter implements GlobalFilter, Ordered {
     /**
      * 请求地址匹配
      */
-    private PathMatcher pathMatcher = new AntPathMatcher();
+    private final PathMatcher pathMatcher = new AntPathMatcher();
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
@@ -47,20 +52,18 @@ public class PreAuthTokenFilter implements GlobalFilter, Ordered {
             return chain.filter(exchange);
         }
 
-        String authorization = request.getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
 
-        OAuth2Authorization oAuth2Authorization = oAuth2AuthorizationService.findByToken(authorization, OAuth2TokenType.ACCESS_TOKEN);
+        String headAuthorization = request.getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
+        AssertUtils.checkArgument(StringUtils.hasLength(headAuthorization), SecurityExceptionCode.TOKEN_INFO_IS_EMPTY.getMessage());
+
+        OAuth2Authorization oAuth2Authorization = oAuth2AuthorizationService.findByToken(AccessTokenUtils.getTokenFromHead(headAuthorization), OAuth2TokenType.ACCESS_TOKEN);
         //校验token正确性
-//        AssertUtils.checkNotNull(oAuth2Authorization, )
-
+        AssertUtils.checkNotNull(oAuth2Authorization, SecurityExceptionCode.TOKEN_INFO_IS_EMPTY.getMessage());
 
         //校验token
         if (matchPublicUrl(requestPath)) {
             return chain.filter(exchange);
         }
-
-
-
         //校验地址是否需要权限
         return chain.filter(exchange);
     }

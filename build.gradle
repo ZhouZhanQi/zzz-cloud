@@ -1,8 +1,8 @@
 buildscript {
     ext {
-        springBootVersion = '2.7.5'
-        springCloudVersion = '2021.0.4'
-        springCloudAlibabaVersion = '2021.0.4.0'
+        springBootVersion = '2.6.14'
+        springCloudVersion = '2021.0.5'
+        springCloudAlibabaVersion = '2021.0.5.0'
         mapstructVersion = '1.4.2.Final'
         lombokMapstructBindingVersion = '0.2.0'
         lombokVersion = '1.18.22'
@@ -27,7 +27,7 @@ buildscript {
         velocityEngineVersion = '2.3'
         zzzFrameworkUtilVersion = '0.0.1-SNAPSHOT'
         zzzFrameworkVersion = '0.0.1-SNAPSHOT'
-        springAuthorizationServerVersion = '0.3.1'
+        springAuthorizationServerVersion = '0.4.2'
     }
 
     repositories {

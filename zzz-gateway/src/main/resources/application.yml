@@ -24,3 +24,14 @@ spring:
         namespace: local
         username: nacos
         password: nacos
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    health:
+      show-details: ALWAYS
+zzz:
+  log:
+    path: D:\logs\zzz-cloud\${spring.application.name}

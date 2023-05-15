@@ -71,11 +71,10 @@ public class ZzzAuthenticationProvider extends AbstractUserDetailsAuthentication
         String clientId = StrUtil.isBlank(paramMap.get(OAuth2ParameterNames.CLIENT_ID)) ? BASIC_CONVERT.convert(request).getName() : paramMap.get(OAuth2ParameterNames.CLIENT_ID);
 
         Map<String, ZzzUserDetailService> userDetailServiceMap = SpringUtil.getBeansOfType(ZzzUserDetailService.class);
-        UserDetails userDetails  = userDetailServiceMap.values().stream()
+        return userDetailServiceMap.values().stream()
                 .filter(service -> service.support(clientId, grantType))
                 .max(Comparator.comparingInt(Ordered::getOrder))
                 .orElseThrow(() -> new InternalAuthenticationServiceException("UserDetailService is error, may not register"))
                 .loadUserByUsername(username);
-        return userDetails;
     }
 }

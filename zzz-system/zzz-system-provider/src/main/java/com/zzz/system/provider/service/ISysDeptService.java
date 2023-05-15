@@ -2,6 +2,7 @@ package com.zzz.system.provider.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zzz.system.api.model.domain.SysDept;
+import com.zzz.system.provider.controller.SysDeptController;
 
 /**
  * <p>
@@ -27,4 +28,10 @@ public interface ISysDeptService extends IService<SysDept> {
      */
     SysDept getByIdIgnoreTenant(Long id);
 
+    /**
+     * 创建部门信息
+     * @param dept
+     * @return
+     */
+    SysDept createDept(SysDept dept);
 }

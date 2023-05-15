@@ -1,12 +1,17 @@
 package com.zzz.auth.provider.service.impl;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.ArrayUtil;
 import com.google.common.collect.Lists;
 import com.zzz.auth.api.model.code.AuthResponseCode;
 import com.zzz.auth.provider.service.ZzzUserDetailService;
 import com.zzz.framework.common.exceptions.BusinessException;
+import com.zzz.framework.starter.cache.RedisCacheHelper;
+import com.zzz.framework.starter.core.model.ZzzUser;
 import com.zzz.framework.starter.core.utils.ClientUtils;
+import com.zzz.framework.starter.security.model.bo.ZzzUserDetail;
 import com.zzz.system.api.model.domain.SysRole;
+import com.zzz.system.api.model.enums.SysRedisKeyPrefix;
 import com.zzz.system.client.service.RemoteSysUserServiceClient;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -50,20 +55,23 @@ public class ZzzUserDetailServiceImpl implements ZzzUserDetailService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public ZzzUserDetail loadUserByUsername(String username) throws UsernameNotFoundException {
         return Optional.ofNullable(ClientUtils.serviceCallDataNoThrow(remoteSysUserServiceClient.getFullInfoByUsername(username)))
                 .map(sysUserBo -> {
                     //todo 获取角色信息
                     List<String> authorityList = Lists.newArrayList("role");
-
                     List<GrantedAuthority> authorities = AuthorityUtils
                             .createAuthorityList(ArrayUtil.toArray(authorityList, String.class));
 
-                    return User.builder()
-                            .username(sysUserBo.getUserName())
-                            .password(sysUserBo.getPassword())
-                            .authorities(authorities)
-                            .build();
+                    ZzzUserDetail zzzUserDetail = new ZzzUserDetail(sysUserBo.getUserName(), sysUserBo.getPassword(), authorities);
+                    ZzzUser zzzUser = ZzzUser.builder()
+                            .userId(sysUserBo.getId())
+                            .userName(sysUserBo.getUserName())
+                            .tenantId(sysUserBo.getTenantId())
+                            .deptId(sysUserBo.getDeptId())
+                            .postId(sysUserBo.getSysPost().getId()).build();
+                   zzzUserDetail.setZzzUser(zzzUser);
+                   return zzzUserDetail;
                 }).orElseThrow(() -> new BusinessException(AuthResponseCode.USERNAME_OR_PASSWORD_ERROR));
     }
 

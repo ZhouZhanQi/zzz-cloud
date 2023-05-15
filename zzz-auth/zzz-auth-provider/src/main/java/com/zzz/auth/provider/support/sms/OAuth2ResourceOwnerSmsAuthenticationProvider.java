@@ -1,6 +1,8 @@
 package com.zzz.auth.provider.support.sms;
 
 import com.zzz.auth.provider.support.customize.ZzzOauth2AuthenticationProvider;
+import com.zzz.framework.starter.cache.RedisCacheHelper;
+import com.zzz.framework.starter.core.model.ZzzUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -19,8 +21,8 @@ import java.util.Map;
  */
 public class OAuth2ResourceOwnerSmsAuthenticationProvider extends ZzzOauth2AuthenticationProvider<OAuth2ResourceOwnerSmsAuthenticationToken> {
 
-    public OAuth2ResourceOwnerSmsAuthenticationProvider(AuthenticationManager authenticationManager, OAuth2AuthorizationService authorizationService, OAuth2TokenGenerator<? extends OAuth2Token> tokenGenerator) {
-        super(authenticationManager, authorizationService, tokenGenerator);
+    public OAuth2ResourceOwnerSmsAuthenticationProvider(AuthenticationManager authenticationManager, OAuth2AuthorizationService authorizationService, OAuth2TokenGenerator<? extends OAuth2Token> tokenGenerator, RedisCacheHelper<ZzzUser> redisCacheHelper) {
+        super(authenticationManager, authorizationService, tokenGenerator, redisCacheHelper);
     }
 
     @Override

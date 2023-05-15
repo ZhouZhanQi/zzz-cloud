@@ -13,6 +13,8 @@ import com.zzz.system.provider.service.ISysUserPostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 /**
  * <p>
  * 系统租户职位 服务实现类
@@ -32,5 +34,14 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPost> impl
         SysUserPost userPost = sysUserPostService.getOne(Wrappers.lambdaQuery(SysUserPost.class).eq(SysUserPost::getUserId, userId));
         AssertUtils.checkNotNull(userPost, new BusinessException(OauthResponseCode.POST_NOT_FOUND_ERROR));
         return this.getBaseMapper().selectOneIgnoreTenant(Wrappers.lambdaQuery(SysPost.class).eq(SysPost::getId, userPost.getPostId()));
+    }
+
+
+    @Override
+    public SysPost createSysPost(SysPost sysPost) {
+        //校验租户信息是否存在
+
+
+        return null;
     }
 }

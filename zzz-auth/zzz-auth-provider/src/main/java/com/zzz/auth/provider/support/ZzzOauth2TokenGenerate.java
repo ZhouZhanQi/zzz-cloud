@@ -7,10 +7,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.core.ClaimAccessor;
 import org.springframework.security.oauth2.core.OAuth2AccessToken;
-import org.springframework.security.oauth2.core.OAuth2TokenFormat;
-import org.springframework.security.oauth2.core.OAuth2TokenType;
 import org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames;
+import org.springframework.security.oauth2.server.authorization.OAuth2TokenType;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
+import org.springframework.security.oauth2.server.authorization.settings.OAuth2TokenFormat;
 import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenClaimsContext;
 import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenClaimsSet;
 import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenContext;
@@ -42,7 +42,7 @@ public class ZzzOauth2TokenGenerate implements OAuth2TokenGenerator<OAuth2Access
         }
 
         //发布者信息
-        String issuer = Optional.ofNullable(context.getProviderContext()).map(providerContext -> providerContext.getIssuer()).orElse(null);
+        String issuer = Optional.ofNullable(context.getAuthorizationServerContext()).map(providerContext -> providerContext.getIssuer()).orElse(null);
 
         RegisteredClient registeredClient = context.getRegisteredClient();
         //发布时间
@@ -70,11 +70,11 @@ public class ZzzOauth2TokenGenerate implements OAuth2TokenGenerator<OAuth2Access
             OAuth2TokenClaimsContext.Builder accessTokenContextBuilder = OAuth2TokenClaimsContext.with(claimsBuilder)
                     .registeredClient(context.getRegisteredClient())
                     .principal(context.getPrincipal())
-                    .providerContext(context.getProviderContext())
+                    .authorizationServerContext(context.getAuthorizationServerContext())
                     .authorizedScopes(context.getAuthorizedScopes())
                     .tokenType(context.getTokenType())
                     .authorizationGrantType(context.getAuthorizationGrantType());
-            Optional.ofNullable(context.getAuthorization()).ifPresent(authorization -> accessTokenContextBuilder.authorization(authorization));
+            Optional.ofNullable(context.getAuthorization()).ifPresent(accessTokenContextBuilder::authorization);
             Optional.ofNullable(context.getAuthorizationGrant()).ifPresent(authorizationGrant -> accessTokenContextBuilder.authorizationGrant((Authentication) authorizationGrant));
             // @formatter:on
             this.oAuth2TokenCustomizer.customize(accessTokenContextBuilder.build());

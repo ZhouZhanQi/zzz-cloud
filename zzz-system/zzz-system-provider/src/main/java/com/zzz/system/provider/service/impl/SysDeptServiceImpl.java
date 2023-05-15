@@ -2,13 +2,18 @@ package com.zzz.system.provider.service.impl;
 
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.zzz.framework.common.exceptions.BusinessException;
 import com.zzz.system.api.model.domain.SysDept;
 import com.zzz.system.api.model.domain.SysPost;
+import com.zzz.system.api.model.domain.SysTenant;
 import com.zzz.system.provider.mapper.SysDeptMapper;
 import com.zzz.system.provider.service.ISysDeptService;
 import com.zzz.system.provider.service.ISysPostService;
+import com.zzz.system.provider.service.ISysTenantService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 /**
  * <p>
@@ -24,6 +29,9 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
 
     private final ISysPostService sysPostService;
 
+
+    private final ISysTenantService sysTenantService;
+
     @Override
     public SysDept getByUserId(Long userId) {
         //查询用户职位
@@ -35,5 +43,14 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
     @Override
     public SysDept getByIdIgnoreTenant(Long id) {
         return this.getBaseMapper().selectOneIgnoreTenant(Wrappers.lambdaQuery(SysDept.class).eq(SysDept::getId, id));
+    }
+
+    @Override
+    public SysDept createDept(SysDept dept) {
+        //校验租户信息是否正确
+        //todo 校验租户状态
+        Optional.ofNullable(sysTenantService.getById(dept.getTenantId())).orElseThrow(() -> new BusinessException("租户信息异常"));
+        this.save(dept);
+        return dept;
     }
 }

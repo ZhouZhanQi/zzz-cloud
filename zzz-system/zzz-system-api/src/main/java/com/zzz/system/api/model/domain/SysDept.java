@@ -5,6 +5,9 @@ import com.zzz.framework.starter.core.model.BaseModel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+
 /**
  * <p>
  * 系统租户部门
@@ -27,6 +30,7 @@ public class SysDept extends BaseModel {
     /**
      * 部门名称
      */
+    @NotEmpty(message = "部门名称不能为空")
     @TableField("dept_name")
     private String deptName;
 
@@ -65,6 +69,7 @@ public class SysDept extends BaseModel {
     /**
      * 部门所属租户
      */
+    @NotNull(message = "部门所属租户不能为空")
     @TableField("tenant_id")
     private Long tenantId;
 }

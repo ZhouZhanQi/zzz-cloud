@@ -15,6 +15,8 @@ import com.zzz.auth.provider.support.pwd.OAuth2ResourceOwnerPwdAuthenticationCon
 import com.zzz.auth.provider.support.pwd.OAuth2ResourceOwnerPwdAuthenticationProvider;
 import com.zzz.auth.provider.support.sms.OAuth2ResourceOwnerSmsAuthenticationConvert;
 import com.zzz.auth.provider.support.sms.OAuth2ResourceOwnerSmsAuthenticationProvider;
+import com.zzz.framework.starter.cache.RedisCacheHelper;
+import com.zzz.framework.starter.core.model.ZzzUser;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.context.annotation.Bean;
@@ -24,11 +26,11 @@ import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configurers.oauth2.server.authorization.OAuth2AuthorizationServerConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
-import org.springframework.security.oauth2.server.authorization.config.ProviderSettings;
+import org.springframework.security.oauth2.server.authorization.config.annotation.web.configurers.OAuth2AuthorizationServerConfigurer;
+import org.springframework.security.oauth2.server.authorization.settings.AuthorizationServerSettings;
 import org.springframework.security.oauth2.server.authorization.token.DelegatingOAuth2TokenGenerator;
 import org.springframework.security.oauth2.server.authorization.token.OAuth2RefreshTokenGenerator;
 import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenGenerator;
@@ -55,11 +57,13 @@ public class ZzzAuthorizationServerConfig {
 
     private final OAuth2AuthorizationService oAuth2AuthorizationService;
 
+    private final RedisCacheHelper<ZzzUser> redisCacheHelper;
+
     @Bean
     @Order(Ordered.HIGHEST_PRECEDENCE)
     @SneakyThrows
     public SecurityFilterChain authSecurityFilterChain(HttpSecurity http) {
-        OAuth2AuthorizationServerConfigurer<HttpSecurity> authorizationServerConfigurer = new OAuth2AuthorizationServerConfigurer<>();
+        OAuth2AuthorizationServerConfigurer authorizationServerConfigurer = new OAuth2AuthorizationServerConfigurer();
         http.apply(authorizationServerConfigurer.tokenEndpoint((tokenEndpoint) -> {// 个性化认证授权端点
                     tokenEndpoint.accessTokenRequestConverter(accessTokenRequestConverter()) // 注入自定义的授权认证Converter
                             .accessTokenResponseHandler(new ZzzAuthSuccessHandler()) // 登录成功处理器
@@ -70,20 +74,19 @@ public class ZzzAuthorizationServerConfig {
                                 .authorizationEndpoint(authorizationEndpoint -> authorizationEndpoint.consentPage("/zzz-auth/oauth2/consent"))// 处理客户端认证异常
                 );
 
-        DefaultSecurityFilterChain securityFilterChain = http.requestMatcher(authorizationServerConfigurer.getEndpointsMatcher())
-                .authorizeRequests(authorizeRequests -> authorizeRequests.anyRequest().authenticated())
+        DefaultSecurityFilterChain securityFilterChain = http.securityMatcher(authorizationServerConfigurer.getEndpointsMatcher())
+                .authorizeHttpRequests(authorizeRequests -> authorizeRequests.anyRequest().authenticated())
                 .csrf().disable()
                 .csrf(csrf ->  csrf.ignoringRequestMatchers(authorizationServerConfigurer.getEndpointsMatcher()))
                 .apply(authorizationServerConfigurer.authorizationService(oAuth2AuthorizationService)// redis存储token的实现
-                        .providerSettings(ProviderSettings.builder().build()))
+                        .authorizationServerSettings(AuthorizationServerSettings.builder().build()))
                 .and().formLogin(Customizer.withDefaults()).build();
         addCustomOAuth2GrantAuthenticationProvider(http);
         return securityFilterChain;
     }
 
 
-    @Bean
-    public OAuth2TokenGenerator oAuth2TokenGenerator() {
+    private OAuth2TokenGenerator oAuth2TokenGenerator() {
         ZzzOauth2TokenGenerate accessTokenGenerator = new ZzzOauth2TokenGenerate();
         // 注入Token 扩展关联用户信息
         accessTokenGenerator.setAccessTokenCustomizer(new ZzzOAuth2TokenCustomizer());
@@ -101,15 +104,14 @@ public class ZzzAuthorizationServerConfig {
     }
 
     @Bean
-    public ProviderSettings providerSettings() {
-        return ProviderSettings.builder().build();
+    public AuthorizationServerSettings providerSettings() {
+        return AuthorizationServerSettings.builder().build();
     }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
 
     /**
      * 自定义转换器并注入委派转换器
@@ -135,10 +137,10 @@ public class ZzzAuthorizationServerConfig {
         OAuth2AuthorizationService authorizationService = http.getSharedObject(OAuth2AuthorizationService.class);
 
         OAuth2ResourceOwnerPwdAuthenticationProvider pwdAuthenticationProvider = new OAuth2ResourceOwnerPwdAuthenticationProvider(
-                authenticationManager, authorizationService, oAuth2TokenGenerator());
+                authenticationManager, authorizationService, oAuth2TokenGenerator(), redisCacheHelper);
 
         OAuth2ResourceOwnerSmsAuthenticationProvider smsAuthenticationProvider = new OAuth2ResourceOwnerSmsAuthenticationProvider(
-                authenticationManager, authorizationService, oAuth2TokenGenerator());
+                authenticationManager, authorizationService, oAuth2TokenGenerator(), redisCacheHelper);
 
         // 处理 UsernamePasswordAuthenticationToken
         http.authenticationProvider(new ZzzAuthenticationProvider());

@@ -28,3 +28,6 @@ spring:
         namespace: local
         username: nacos
         password: nacos
+zzz:
+  log:
+    path: D:\logs\zzz-cloud\${spring.application.name}
