@@ -1,0 +1,13 @@
+group 'com.zzz.manage'
+version '1.0-SNAPSHOT'
+
+dependencies {
+    implementation("com.zzz.framework:framework-util:${zzzFrameworkUtilVersion}")
+    implementation("com.zzz.framework:framework-core:${zzzFrameworkVersion}")
+
+    implementation("com.alibaba.cloud:spring-cloud-starter-alibaba-nacos-discovery") {
+        exclude group: "org.springframework.cloud", module: "spring-cloud-starter-netflix-ribbon"
+    }
+    implementation("com.alibaba.cloud:spring-cloud-starter-alibaba-nacos-config")
+    implementation("org.springframework.boot:spring-boot-starter-undertow")
+}

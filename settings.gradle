@@ -1,5 +1,6 @@
 rootProject.name = 'zzz-cloud'
 include 'zzz-gateway'
+include 'zzz-manage'
 include 'zzz-system:zzz-system-api'
 include 'zzz-system:zzz-system-provider'
 include 'zzz-auth:zzz-auth-api'

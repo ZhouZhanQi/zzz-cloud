@@ -5,10 +5,13 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.zzz.framework.common.exceptions.BusinessException;
 import com.zzz.framework.common.util.AssertUtils;
 import com.zzz.system.api.model.code.OauthResponseCode;
+import com.zzz.system.api.model.domain.SysDept;
 import com.zzz.system.api.model.domain.SysPost;
 import com.zzz.system.api.model.domain.SysUserPost;
 import com.zzz.system.provider.mapper.SysPostMapper;
+import com.zzz.system.provider.service.ISysDeptService;
 import com.zzz.system.provider.service.ISysPostService;
+import com.zzz.system.provider.service.ISysTenantService;
 import com.zzz.system.provider.service.ISysUserPostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -29,6 +32,8 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPost> impl
 
     private final ISysUserPostService sysUserPostService;
 
+    private final ISysDeptService sysDeptService;
+
     @Override
     public SysPost getByUserId(Long userId) {
         SysUserPost userPost = sysUserPostService.getOne(Wrappers.lambdaQuery(SysUserPost.class).eq(SysUserPost::getUserId, userId));
@@ -40,8 +45,9 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPost> impl
     @Override
     public SysPost createSysPost(SysPost sysPost) {
         //校验租户信息是否存在
-
-
-        return null;
+        AssertUtils.checkArgument(sysDeptService.count(Wrappers.lambdaQuery(SysDept.class).eq(SysDept::getId, sysPost.getDeptId())) == 1,
+                () -> new BusinessException("获取部门信息异常"));
+        this.save(sysPost);
+        return sysPost;
     }
 }
